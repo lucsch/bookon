@@ -9,6 +9,6 @@
 
 extern void initialize_images(void);
 
-extern wxBitmap *_img_conan_icon;
+extern wxBitmap *_img_bookon_icon;
 
 #endif /* BITMAP_H */

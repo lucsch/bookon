@@ -13,7 +13,7 @@ MainFrame::MainFrame(const wxString &title) : wxFrame(NULL, wxID_ANY, title) {
   wxInitAllImageHandlers();
   initialize_images();
   wxIcon frame_icon;
-  frame_icon.CopyFromBitmap(*_img_conan_icon);
+  frame_icon.CopyFromBitmap(*_img_bookon_icon);
   SetIcon(frame_icon);
 
   _create_controls();
