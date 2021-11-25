@@ -9,9 +9,9 @@
 
 enum { ID_QUIT = wxID_EXIT, ID_ABOUT = wxID_ABOUT };
 
-class MainFrame : public wxFrame {
+class FrameMain : public wxFrame {
 public:
-  MainFrame(const wxString &title);
+ FrameMain(const wxString &title);
 
   void OnQuit(wxCommandEvent &event);
   void OnAbout(wxCommandEvent &event);

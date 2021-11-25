@@ -1,5 +1,6 @@
 #include "app.h"
-#include "mainframe.h"
+
+#include "framemain.h"
 
 IMPLEMENT_APP(MainApp)
 
@@ -8,7 +9,7 @@ bool MainApp::OnInit() {
     return false;
   }
 
-  MainFrame *frame = new MainFrame("Minimal wxWidgets App");
+  FrameMain *frame = new FrameMain("Bookon");
   frame->Show(true);
   return true;
 }

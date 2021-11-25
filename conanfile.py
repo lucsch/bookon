@@ -6,8 +6,9 @@ class BasicwxWidgets(ConanFile):
     requires = ["wxwidgets/3.1.4@terranum-conan+wxwidgets/stable"]
     generators = "cmake", "gcc", "txt"
 
-    # default_options = {"wxwidgets:shared": True}
-    default_options = {"wxwidgets:webview": False}
+    def configure(self):
+        if self.settings.os == "Linux":
+            self.options["wxwidgets"].webview = False # webview control isn't available on linux.
 
     def imports(self):
         self.copy("*.dll", dst="bin", src="bin")  # From bin to bin

@@ -23,8 +23,9 @@ set_source_files_properties(${ICON_PATH} PROPERTIES MACOSX_PACKAGE_LOCATION Reso
 INCLUDE_DIRECTORIES(src)
 ADD_EXECUTABLE(${CMAKE_PROJECT_NAME} MACOSX_BUNDLE WIN32
         src/app.cpp
-        src/mainframe.cpp
+        src/framemain.cpp
         src/bitmap.cpp
+        src/frameabout.cpp
         ${CMAKE_BINARY_DIR}/version.cpp
         ${ICON_PATH}
         src/resource.rc)

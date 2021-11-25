@@ -1,6 +1,3 @@
-set(${PROJECT_NAME}_MAJOR_VERSION "2")
-set(${PROJECT_NAME}_MINOR_VERSION "0")
-
 execute_process(COMMAND git describe --always --dirty=+
         OUTPUT_VARIABLE GIT_REV
         ERROR_QUIET)
