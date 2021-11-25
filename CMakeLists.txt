@@ -19,8 +19,16 @@ set(MACOSX_BUNDLE_ICON_FILE bookon.icns)
 set(ICON_PATH "${CMAKE_SOURCE_DIR}/art/bookon.icns")
 set_source_files_properties(${ICON_PATH} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 
-#include
 INCLUDE_DIRECTORIES(src)
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
+# put source files into a library for unit testing
+find_package(Protobuf REQUIRED)
+protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS src/bookmark.proto)
+set(SRC_FILES
+        ${PROTO_SRCS})
+add_library(${PROJECT_NAME}_lib OBJECT ${SRC_FILES})
+
 ADD_EXECUTABLE(${CMAKE_PROJECT_NAME} MACOSX_BUNDLE WIN32
         src/app.cpp
         src/framemain.cpp
@@ -29,7 +37,7 @@ ADD_EXECUTABLE(${CMAKE_PROJECT_NAME} MACOSX_BUNDLE WIN32
         ${CMAKE_BINARY_DIR}/version.cpp
         ${ICON_PATH}
         src/resource.rc)
-target_link_libraries(${CMAKE_PROJECT_NAME} ${CONAN_LIBS})
+target_link_libraries(${CMAKE_PROJECT_NAME} ${CONAN_LIBS} ${PROJECT_NAME}_lib)
 
 # unit testing
 enable_testing()

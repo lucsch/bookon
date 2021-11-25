@@ -1,0 +1,13 @@
+syntax = "proto2";
+package bk;
+
+message Bookmark {
+  required int32 id =1;
+  optional string description = 2;
+  enum Action {
+    OPEN = 0;
+    WEB = 1;
+    COPY = 2;
+  }
+  optional Action action = 3 [default = OPEN];
+}

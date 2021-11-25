@@ -1,5 +1,6 @@
 #include "frameabout.h"
 #include "bitmap.h"
+#include "bookmark.pb.h"
 
 FrameAbout::FrameAbout(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size,
                        long style)
@@ -14,6 +15,13 @@ FrameAbout::FrameAbout(wxWindow* parent, wxWindowID id, const wxString& title, c
             << "Branch: " << GIT_BRANCH << "\n";
 
   // libs version
+  int my_proto_major = GOOGLE_PROTOBUF_VERSION / 1000000;
+  int my_proto_minor = (GOOGLE_PROTOBUF_VERSION - (my_proto_major*1000000)) / 1000;
+  wxString my_proto_txt;
+  my_proto_txt << GOOGLE_PROTOBUF_VERSION;
+  int my_proto_build = wxAtoi(my_proto_txt.Right(3));
+  myVersion << "Protobuf: " << my_proto_major << "." << my_proto_minor << "." << my_proto_build << "\n";
+
   myVersion << wxVERSION_STRING << "\n";
 #ifdef _OPENMP
   myVersion << "OpenMP: " << _OPENMP << "\n";

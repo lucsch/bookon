@@ -4,7 +4,9 @@ from conans import ConanFile, CMake
 class BasicwxWidgets(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     requires = ["wxwidgets/3.1.4@terranum-conan+wxwidgets/stable",
-                "gtest/1.11.0"]
+                "gtest/1.11.0",
+                "protobuf/3.17.1"]
+
     generators = "cmake", "gcc", "txt"
 
     def configure(self):

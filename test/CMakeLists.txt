@@ -16,7 +16,7 @@ include_directories(${CMAKE_BINARY_DIR})
 add_executable(UnitTests
         test.cpp )
 #         $<TARGET_OBJECTS:${PROJECT_NAME}_lib>)
-target_link_libraries(UnitTests ${CONAN_LIBS})
+target_link_libraries(UnitTests ${CONAN_LIBS} ${PROJECT_NAME}_lib)
 add_test(NAME test COMMAND UnitTests)
 
 # suppressing warning for missing PDB files for linked libs
