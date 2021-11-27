@@ -1,7 +1,7 @@
 #include "framemain.h"
-#include "frameabout.h"
 
 #include "bitmap.h"
+#include "frameabout.h"
 
 extern const char *bookon_MAJOR_VERSION;
 extern const char *bookon_MINOR_VERSION;
@@ -21,20 +21,43 @@ FrameMain::FrameMain(const wxString &title) : wxFrame(NULL, wxID_ANY, title) {
   _create_menubar();
   _create_statusbar();
   _connect_events();
-
-
 }
 
 void FrameMain::_create_controls() {
-  SetSizeHints(wxDefaultSize, wxDefaultSize);
+  this->SetSizeHints(wxDefaultSize, wxDefaultSize);
+
   wxBoxSizer *bSizer1;
   bSizer1 = new wxBoxSizer(wxVERTICAL);
 
-  m_text_ctrl = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
-  bSizer1->Add(m_text_ctrl, 1, wxEXPAND, 5);
+  wxPanel *m_panel1;
+  m_panel1 = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
+  wxBoxSizer *bSizer2;
+  bSizer2 = new wxBoxSizer(wxVERTICAL);
 
-  SetSizer(bSizer1);
-  Layout();
+  m_data_ctrl = new wxDataViewCtrl(m_panel1, wxID_ANY, wxDefaultPosition, wxSize(-1, -1), 0);
+  bSizer2->Add(m_data_ctrl, 1, wxEXPAND, 5);
+
+  wxBoxSizer *bSizer3;
+  bSizer3 = new wxBoxSizer(wxHORIZONTAL);
+
+  bSizer3->Add(0, 0, 1, wxEXPAND, 5);
+
+  m_search_ctrl = new wxSearchCtrl(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(250, -1), 0);
+#ifndef __WXMAC__
+  m_search_ctrl->ShowSearchButton(true);
+#endif
+  m_search_ctrl->ShowCancelButton(true);
+  bSizer3->Add(m_search_ctrl, 0, wxALL, 5);
+
+  bSizer2->Add(bSizer3, 0, wxEXPAND, 5);
+
+  m_panel1->SetSizer(bSizer2);
+  m_panel1->Layout();
+  bSizer2->Fit(m_panel1);
+  bSizer1->Add(m_panel1, 1, wxEXPAND, 5);
+
+  this->SetSizer(bSizer1);
+  this->Layout();
 }
 
 void FrameMain::_connect_events() {
@@ -45,10 +68,9 @@ void FrameMain::_connect_events() {
 void FrameMain::_create_statusbar() {
   CreateStatusBar(2);
   SetStatusBarPane(-1);
-  SetStatusText(wxString::Format(_("Version: %s.%s.%s (%s)"),
-                                 bookon_MAJOR_VERSION,
-                                 bookon_MINOR_VERSION,
-                                 GIT_NUMBER, GIT_REV),1);
+  SetStatusText(
+      wxString::Format(_("Version: %s.%s.%s (%s)"), bookon_MAJOR_VERSION, bookon_MINOR_VERSION, GIT_NUMBER, GIT_REV),
+      1);
 }
 
 void FrameMain::_create_menubar() {

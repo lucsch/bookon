@@ -6,6 +6,8 @@
 #ifndef WX_PRECOMP
 #include "wx/wx.h"
 #endif
+#include "treectrl.h"
+#include <wx/srchctrl.h>
 
 enum { ID_QUIT = wxID_EXIT, ID_ABOUT = wxID_ABOUT };
 
@@ -23,7 +25,9 @@ private:
   void _create_controls();
 
 protected:
-  wxTextCtrl *m_text_ctrl;
+  TreeCtrl *m_tree = nullptr;
+  wxDataViewCtrl* m_data_ctrl;
+  wxSearchCtrl * m_search_ctrl;
 };
 
 #endif
