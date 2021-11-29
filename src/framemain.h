@@ -6,29 +6,33 @@
 #ifndef WX_PRECOMP
 #include "wx/wx.h"
 #endif
-#include "treectrl.h"
-#include <wx/srchctrl.h>
 #include <wx/splitter.h>
+#include <wx/srchctrl.h>
 
-enum { ID_QUIT = wxID_EXIT, ID_ABOUT = wxID_ABOUT };
+#include "contolmain.h"
+
+enum { ID_QUIT = wxID_EXIT, ID_ABOUT = wxID_ABOUT, ID_GROUP_ADD, ID_GROUP_REMOVE };
 
 class FrameMain : public wxFrame {
-public:
- FrameMain(const wxString &title);
+ public:
+  FrameMain(const wxString& title);
 
-  void OnQuit(wxCommandEvent &event);
-  void OnAbout(wxCommandEvent &event);
+  void OnQuit(wxCommandEvent& event);
+  void OnAbout(wxCommandEvent& event);
+  void OnGroupNew(wxCommandEvent& event);
+  void OnGroupRemove(wxCommandEvent& event);
 
-private:
+ private:
   void _create_menubar();
   void _create_statusbar();
   void _connect_events();
   void _create_controls();
 
-protected:
- wxDataViewListCtrl* m_tree_ctrl;
- wxDataViewTreeCtrl* m_list_ctrl;
- wxSearchCtrl* m_search_ctrl;
+  wxDataViewTreeCtrl* m_tree_ctrl;
+  wxDataViewListCtrl* m_list_ctrl;
+  wxSearchCtrl* m_search_ctrl;
+
+  ControlMain* m_control = nullptr;
 };
 
 #endif

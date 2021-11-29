@@ -10,7 +10,7 @@ extern const char *GIT_TAG;
 extern const char *GIT_BRANCH;
 extern const char *GIT_NUMBER;
 
-FrameMain::FrameMain(const wxString &title) : wxFrame(NULL, wxID_ANY, title) {
+FrameMain::FrameMain(const wxString &title) : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(900, 700)) {
   wxInitAllImageHandlers();
   initialize_images();
   wxIcon frame_icon;
@@ -22,6 +22,7 @@ FrameMain::FrameMain(const wxString &title) : wxFrame(NULL, wxID_ANY, title) {
   _create_statusbar();
   _connect_events();
 
+  m_control = new ControlMain(m_tree_ctrl, m_list_ctrl);
 }
 
 void FrameMain::_create_controls() {
@@ -40,7 +41,6 @@ void FrameMain::_create_controls() {
 
   wxSplitterWindow *m_splitter1;
   m_splitter1 = new wxSplitterWindow(m_panel1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_3D | wxSP_LIVE_UPDATE);
-  // m_splitter1->Connect(wxEVT_IDLE, wxIdleEventHandler(FrameMain::m_splitter1OnIdle), NULL, this);
   m_splitter1->SetMinimumPaneSize(200);
 
   wxPanel *m_panel2;
@@ -48,7 +48,7 @@ void FrameMain::_create_controls() {
   wxBoxSizer *bSizer6;
   bSizer6 = new wxBoxSizer(wxVERTICAL);
 
-  m_tree_ctrl = new wxDataViewListCtrl(m_panel2, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0);
+  m_tree_ctrl = new wxDataViewTreeCtrl(m_panel2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxDV_NO_HEADER);
   bSizer6->Add(m_tree_ctrl, 1, wxEXPAND, 5);
 
   m_panel2->SetSizer(bSizer6);
@@ -59,7 +59,7 @@ void FrameMain::_create_controls() {
   wxBoxSizer *bSizer7;
   bSizer7 = new wxBoxSizer(wxVERTICAL);
 
-  m_list_ctrl = new wxDataViewTreeCtrl(m_panel3, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0);
+  m_list_ctrl = new wxDataViewListCtrl(m_panel3, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxDV_HORIZ_RULES);
   bSizer7->Add(m_list_ctrl, 1, wxEXPAND, 5);
 
   m_panel3->SetSizer(bSizer7);
@@ -92,12 +92,14 @@ void FrameMain::_create_controls() {
   this->SetSizer(bSizer1);
   this->Layout();
 
-  m_splitter1->SetSashPosition( 300 );
+  m_splitter1->SetSashPosition(300);
 }
 
 void FrameMain::_connect_events() {
   Bind(wxEVT_MENU, &FrameMain::OnQuit, this, ID_QUIT);
   Bind(wxEVT_MENU, &FrameMain::OnAbout, this, ID_ABOUT);
+  Bind(wxEVT_MENU, &FrameMain::OnGroupNew, this, ID_GROUP_ADD);
+  Bind(wxEVT_MENU, &FrameMain::OnGroupRemove, this, ID_GROUP_REMOVE);
 }
 
 void FrameMain::_create_statusbar() {
@@ -109,14 +111,24 @@ void FrameMain::_create_statusbar() {
 }
 
 void FrameMain::_create_menubar() {
+  wxMenuBar *menuBar = new wxMenuBar();
+
+  // FILE
   wxMenu *fileMenu = new wxMenu;
+  fileMenu->Append(ID_QUIT, "E&xit\tAlt-X", "Quit this program");
+  menuBar->Append(fileMenu, "&File");
+
+  // GROUP
+  wxMenu *groupMenu = new wxMenu;
+  groupMenu->Append(ID_GROUP_ADD, _("New group entry") + _T("\t") + _T("Ctrl+G"));
+  groupMenu->Append(ID_GROUP_REMOVE, _("Remove group entry"));
+  menuBar->Append(groupMenu, _("&Group"));
+
+  // HELP
   wxMenu *helpMenu = new wxMenu;
   helpMenu->Append(ID_ABOUT, "&About\tF1", "Show about dialog");
-  fileMenu->Append(ID_QUIT, "E&xit\tAlt-X", "Quit this program");
-
-  wxMenuBar *menuBar = new wxMenuBar();
-  menuBar->Append(fileMenu, "&File");
   menuBar->Append(helpMenu, "&Help");
+
   SetMenuBar(menuBar);
 }
 
@@ -128,3 +140,9 @@ void FrameMain::OnAbout(wxCommandEvent &WXUNUSED(event)) {
   FrameAbout my_dlg(this);
   my_dlg.ShowModal();
 }
+
+void FrameMain::OnGroupNew(wxCommandEvent &event) {
+  m_control->AddGroup("Test");
+}
+
+void FrameMain::OnGroupRemove(wxCommandEvent &event) {}
