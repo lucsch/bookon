@@ -4,6 +4,9 @@
 ControlMain::ControlMain(wxDataViewTreeCtrl *tree, wxDataViewListCtrl *list) {
     m_tree = tree;
     m_list = list;
+
+    m_tree->Bind(wxEVT_DATAVIEW_ITEM_BEGIN_DRAG, &ControlMain::OnBeginDrag, m_tree->GetId());
+    m_tree->Bind(wxEVT_DATAVIEW_ITEM_DROP, &ControlMain::OnBeginDrop, m_tree->GetId());
 }
 
 void ControlMain::AddGroup(const wxString &group_name) {
@@ -62,3 +65,13 @@ void ControlMain::RemoveGroupItem() {
     }
     m_tree->DeleteItem(my_selected_item);
 }
+
+void ControlMain::OnBeginDrag(wxDataViewEvent &event) {
+    wxLogDebug("Begin drag");
+}
+
+void ControlMain::OnBeginDrop(wxDataViewEvent &event) {
+    wxLogDebug("Dropping");
+
+}
+

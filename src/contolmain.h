@@ -17,6 +17,9 @@ public:
     void AddGroupItem(const wxString &string);
     void RemoveGroupItem();
 
+    void OnBeginDrag(wxDataViewEvent & event);
+    void OnBeginDrop(wxDataViewEvent & event);
+
 private:
     wxDataViewTreeCtrl * m_tree;
     wxDataViewListCtrl * m_list;
