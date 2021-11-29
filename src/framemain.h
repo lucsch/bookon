@@ -11,7 +11,7 @@
 
 #include "contolmain.h"
 
-enum { ID_QUIT = wxID_EXIT, ID_ABOUT = wxID_ABOUT, ID_GROUP_ADD, ID_GROUP_REMOVE };
+enum { ID_QUIT = wxID_EXIT, ID_ABOUT = wxID_ABOUT, ID_GROUP_ADD, ID_GROUP_REMOVE, ID_GROUP_ENTRY_ADD, ID_GROUP_ENTRY_REMOVE };
 
 class FrameMain : public wxFrame {
  public:
@@ -21,6 +21,8 @@ class FrameMain : public wxFrame {
   void OnAbout(wxCommandEvent& event);
   void OnGroupNew(wxCommandEvent& event);
   void OnGroupRemove(wxCommandEvent& event);
+  void OnGroupEntryNew(wxCommandEvent & event);
+  void OnGroupEntryRemove(wxCommandEvent & event);
 
  private:
   void _create_menubar();

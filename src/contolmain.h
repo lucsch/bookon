@@ -9,17 +9,17 @@
 #include <wx/dataview.h>
 
 class ControlMain {
- public:
-  ControlMain(wxDataViewTreeCtrl * tree, wxDataViewListCtrl * list);
+public:
+    ControlMain(wxDataViewTreeCtrl * tree, wxDataViewListCtrl * list);
+    void AddGroup(const wxString& group_name);
+    void RemoveGroup();
 
-  bool AddTreeItem(wxDataViewItem * root, const wxString & text);
+    void AddGroupItem(const wxString &string);
+    void RemoveGroupItem();
 
-  void AddGroup(const wxString& group_name);
-
- private:
-  wxDataViewTreeCtrl * m_tree;
-  wxDataViewListCtrl * m_list;
+private:
+    wxDataViewTreeCtrl * m_tree;
+    wxDataViewListCtrl * m_list;
 };
-
 
 #endif  // BOOKON_CONTOLMAIN_H
