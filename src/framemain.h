@@ -8,6 +8,7 @@
 #endif
 #include "treectrl.h"
 #include <wx/srchctrl.h>
+#include <wx/splitter.h>
 
 enum { ID_QUIT = wxID_EXIT, ID_ABOUT = wxID_ABOUT };
 
@@ -25,9 +26,9 @@ private:
   void _create_controls();
 
 protected:
-  TreeCtrl *m_tree = nullptr;
-  wxDataViewCtrl* m_data_ctrl;
-  wxSearchCtrl * m_search_ctrl;
+ wxDataViewListCtrl* m_tree_ctrl;
+ wxDataViewTreeCtrl* m_list_ctrl;
+ wxSearchCtrl* m_search_ctrl;
 };
 
 #endif

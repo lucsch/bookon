@@ -21,6 +21,7 @@ FrameMain::FrameMain(const wxString &title) : wxFrame(NULL, wxID_ANY, title) {
   _create_menubar();
   _create_statusbar();
   _connect_events();
+
 }
 
 void FrameMain::_create_controls() {
@@ -34,8 +35,40 @@ void FrameMain::_create_controls() {
   wxBoxSizer *bSizer2;
   bSizer2 = new wxBoxSizer(wxVERTICAL);
 
-  m_data_ctrl = new wxDataViewCtrl(m_panel1, wxID_ANY, wxDefaultPosition, wxSize(-1, -1), 0);
-  bSizer2->Add(m_data_ctrl, 1, wxEXPAND, 5);
+  wxBoxSizer *bSizer4;
+  bSizer4 = new wxBoxSizer(wxHORIZONTAL);
+
+  wxSplitterWindow *m_splitter1;
+  m_splitter1 = new wxSplitterWindow(m_panel1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_3D | wxSP_LIVE_UPDATE);
+  // m_splitter1->Connect(wxEVT_IDLE, wxIdleEventHandler(FrameMain::m_splitter1OnIdle), NULL, this);
+  m_splitter1->SetMinimumPaneSize(200);
+
+  wxPanel *m_panel2;
+  m_panel2 = new wxPanel(m_splitter1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
+  wxBoxSizer *bSizer6;
+  bSizer6 = new wxBoxSizer(wxVERTICAL);
+
+  m_tree_ctrl = new wxDataViewListCtrl(m_panel2, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0);
+  bSizer6->Add(m_tree_ctrl, 1, wxEXPAND, 5);
+
+  m_panel2->SetSizer(bSizer6);
+  m_panel2->Layout();
+  bSizer6->Fit(m_panel2);
+  wxPanel *m_panel3;
+  m_panel3 = new wxPanel(m_splitter1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
+  wxBoxSizer *bSizer7;
+  bSizer7 = new wxBoxSizer(wxVERTICAL);
+
+  m_list_ctrl = new wxDataViewTreeCtrl(m_panel3, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0);
+  bSizer7->Add(m_list_ctrl, 1, wxEXPAND, 5);
+
+  m_panel3->SetSizer(bSizer7);
+  m_panel3->Layout();
+  bSizer7->Fit(m_panel3);
+  m_splitter1->SplitVertically(m_panel2, m_panel3, 300);
+  bSizer4->Add(m_splitter1, 1, wxEXPAND, 5);
+
+  bSizer2->Add(bSizer4, 1, wxEXPAND, 5);
 
   wxBoxSizer *bSizer3;
   bSizer3 = new wxBoxSizer(wxHORIZONTAL);
@@ -58,6 +91,8 @@ void FrameMain::_create_controls() {
 
   this->SetSizer(bSizer1);
   this->Layout();
+
+  m_splitter1->SetSashPosition( 300 );
 }
 
 void FrameMain::_connect_events() {
