@@ -7,6 +7,7 @@
 #include "wx/wx.h"
 #endif
 #include "treectrl.h"
+#include "treemodel.h"
 #include <wx/srchctrl.h>
 
 enum { ID_QUIT = wxID_EXIT, ID_ABOUT = wxID_ABOUT };
@@ -25,9 +26,11 @@ private:
   void _create_controls();
 
 protected:
-  TreeCtrl *m_tree = nullptr;
-  wxDataViewCtrl* m_data_ctrl;
+  TreeCtrl *m_data_ctrl = nullptr;
+  // wxDataViewCtrl* m_data_ctrl;
   wxSearchCtrl * m_search_ctrl;
+
+  wxObjectDataPtr<TreeModel> m_tree_model;
 };
 
 #endif

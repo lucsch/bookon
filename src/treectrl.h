@@ -1,10 +1,6 @@
 #ifndef BOOKON_TREECTRL_H
 #define BOOKON_TREECTRL_H
 
-#include "wx/wxprec.h"
-#ifndef WX_PRECOMP
-#include "wx/wx.h"
-#endif
 #include <wx/dataview.h>
 
 class TreeCtrl : public wxDataViewCtrl {

@@ -21,6 +21,12 @@ FrameMain::FrameMain(const wxString &title) : wxFrame(NULL, wxID_ANY, title) {
   _create_menubar();
   _create_statusbar();
   _connect_events();
+
+  m_tree_model = new TreeModel;
+  m_data_ctrl->AssociateModel(m_tree_model.get());
+
+
+
 }
 
 void FrameMain::_create_controls() {
@@ -34,7 +40,7 @@ void FrameMain::_create_controls() {
   wxBoxSizer *bSizer2;
   bSizer2 = new wxBoxSizer(wxVERTICAL);
 
-  m_data_ctrl = new wxDataViewCtrl(m_panel1, wxID_ANY, wxDefaultPosition, wxSize(-1, -1), 0);
+  m_data_ctrl = new TreeCtrl(m_panel1, wxID_ANY, wxDefaultPosition, wxSize(-1, -1), 0);
   bSizer2->Add(m_data_ctrl, 1, wxEXPAND, 5);
 
   wxBoxSizer *bSizer3;
