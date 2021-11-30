@@ -7,26 +7,28 @@
 #endif
 
 #include <wx/dataview.h>
+#include <wx/treectrl.h>
 
 class ControlMain {
  public:
-  ControlMain(wxDataViewTreeCtrl* tree, wxDataViewListCtrl* list);
+  ControlMain(wxTreeCtrl* tree, wxDataViewListCtrl* list);
   void AddGroup(const wxString& group_name);
   void RemoveGroup();
 
   void AddGroupItem(const wxString& string);
   void RemoveGroupItem();
 
-  void OnBeginDrag(wxDataViewEvent& event);
-  void OnBeginDrop(wxDataViewEvent& event);
-  void OnDropPossible(wxDataViewEvent& event);
+  void OnBeginDrag(wxTreeEvent& event);
+  void OnBeginDrop(wxTreeEvent& event);
+  void OnDropPossible(wxTreeEvent& event);
 
  private:
-  wxDataViewTreeCtrl* m_tree;
+  wxTreeCtrl * m_tree;
   wxDataViewListCtrl* m_list;
 
-  wxDataViewItem m_dragged_item;
-  bool _move_tree_item(wxDataViewItem origin, wxDataViewItem destination);
+  wxTreeItemId m_dragged_item;
+  wxTreeItemId m_root;
+  bool _move_tree_item(wxTreeItemId origin, wxTreeItemId destination);
 
 };
 

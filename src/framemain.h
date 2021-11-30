@@ -31,7 +31,7 @@ class FrameMain : public wxFrame {
   void _connect_events();
   void _create_controls();
 
-  wxDataViewTreeCtrl* m_tree_ctrl;
+  wxTreeCtrl* m_tree_ctrl;
   wxDataViewListCtrl* m_list_ctrl;
   wxSearchCtrl* m_search_ctrl;
 
