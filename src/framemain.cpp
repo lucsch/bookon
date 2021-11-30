@@ -17,11 +17,14 @@ FrameMain::FrameMain(const wxString &title) : wxFrame(NULL, wxID_ANY, title, wxD
     frame_icon.CopyFromBitmap(*_img_bookon_icon);
     SetIcon(frame_icon);
 
+
+
     _create_controls();
     _create_menubar();
     _create_statusbar();
     _connect_events();
 
+    // m_tree_ctrl->EnableSystemTheme(false);
     m_control = new ControlMain(m_tree_ctrl, m_list_ctrl);
 }
 

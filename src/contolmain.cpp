@@ -5,9 +5,13 @@ ControlMain::ControlMain(wxDataViewTreeCtrl *tree, wxDataViewListCtrl *list) {
   m_tree = tree;
   m_list = list;
 
+  m_tree->EnableDragSource(wxDF_UNICODETEXT);
+  m_tree->EnableDropTarget(wxDF_UNICODETEXT);
+
   m_tree->Bind(wxEVT_DATAVIEW_ITEM_BEGIN_DRAG, &ControlMain::OnBeginDrag, this, m_tree->GetId());
   m_tree->Bind(wxEVT_DATAVIEW_ITEM_DROP, &ControlMain::OnBeginDrop, this, m_tree->GetId());
   m_tree->Bind(wxEVT_DATAVIEW_ITEM_DROP_POSSIBLE, &ControlMain::OnDropPossible, this, m_tree->GetId());
+  wxLogDebug("Testing debug!");
 }
 
 void ControlMain::AddGroup(const wxString &group_name) {
@@ -74,19 +78,35 @@ void ControlMain::OnBeginDrag(wxDataViewEvent &event) {
   }
   m_dragged_item = event.GetItem();
   wxLogDebug("Begin drag %s", m_tree->GetItemText(event.GetItem()));
+
+  wxTextDataObject *obj = new wxTextDataObject;
+  obj->SetText( m_tree->GetItemText(event.GetItem()));
+  event.SetDataObject( obj );
+  event.SetDragFlags(wxDrag_CopyOnly); // allows both copy and move
 }
 
 void ControlMain::OnBeginDrop(wxDataViewEvent &event) {
+  wxLogDebug("dropping");
   if (!m_dragged_item.IsOk() || !event.GetItem().IsOk()) {
     return;
   }
   wxLogDebug("Dropping on: %s", m_tree->GetItemText(event.GetItem()));
+  wxTextDataObject obj;
+  obj.SetData( wxDF_UNICODETEXT, event.GetDataSize(), event.GetDataBuffer() );
+
+  if ( event.GetItem().IsOk() )
+    wxLogDebug( "Text dropped on item %s: %s", m_tree->GetStore()->GetItemText(event.GetItem()), obj.GetText() );
+  else
+    wxLogDebug( "Text dropped on background: %s", obj.GetText() );
+
   _move_tree_item(m_dragged_item, event.GetItem());
   m_dragged_item.Unset();
 }
 
 void ControlMain::OnDropPossible(wxDataViewEvent &event) {
-  // wxLogDebug("Drop possible!");
+  wxLogDebug("Drop possible!");
+  // event.GetDropEffect()
+
 }
 
 bool ControlMain::_move_tree_item(wxDataViewItem origin, wxDataViewItem destination) {
@@ -98,9 +118,10 @@ bool ControlMain::_move_tree_item(wxDataViewItem origin, wxDataViewItem destinat
 
   // moving items (dropping to containers)
   if (m_tree->IsContainer(destination)){
+    wxLogDebug("item text: %s", m_tree->GetItemText(origin));
     wxDataViewItem my_new_item = m_tree->GetStore()->AppendItem(destination, m_tree->GetItemText(origin), m_tree->GetItemIcon(origin), m_tree->GetItemData(origin));
     wxDataViewItem my_origin_parent = m_tree->GetStore()->GetParent(origin);
-    m_tree->DeleteItem(origin);
+     m_tree->DeleteItem(origin);
     m_tree->Collapse(destination);
     m_tree->Expand(destination);
     m_tree->Collapse(my_origin_parent);
@@ -117,7 +138,9 @@ bool ControlMain::_move_tree_item(wxDataViewItem origin, wxDataViewItem destinat
     m_tree->Expand(my_dest_parent);
     m_tree->Collapse(my_origin_parent);
     m_tree->Expand(my_origin_parent);
-    m_tree->Select(my_new_item);
+     m_tree->Select(my_new_item);
   }
-  return false;
+  m_tree->Refresh();
+  m_tree->Update();
+  return true;
 }

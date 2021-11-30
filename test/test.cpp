@@ -32,13 +32,13 @@ TEST(TestSuite, WriteReadOneBookMark){
   }
 
   {
-    std::fstream output(my_filename.GetFullPath(), std::ios::out | std::ios::trunc | std::ios::binary);
+    std::fstream output(my_filename.GetFullPath().ToStdString(), std::ios::out | std::ios::trunc | std::ios::binary);
     book.SerializeToOstream(&output);
   }
   ASSERT_TRUE(my_filename.Exists());
   {
     Book my_read_book;
-    std::fstream input(my_filename.GetFullPath(), std::ios::in | std::ios::binary);
+    std::fstream input(my_filename.GetFullPath().ToStdString(), std::ios::in | std::ios::binary);
     my_read_book.ParseFromIstream(&input);
     ASSERT_EQ(my_read_book.bookmarks_size(),1 ); // only one bookmark
     ASSERT_EQ(my_read_book.bookmarks(0).description(), "test");

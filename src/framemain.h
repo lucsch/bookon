@@ -9,6 +9,7 @@
 #include <wx/splitter.h>
 #include <wx/srchctrl.h>
 
+#include <wx/systhemectrl.h>
 #include "contolmain.h"
 
 enum { ID_QUIT = wxID_EXIT, ID_ABOUT = wxID_ABOUT, ID_GROUP_ADD, ID_GROUP_REMOVE, ID_GROUP_ENTRY_ADD, ID_GROUP_ENTRY_REMOVE };
