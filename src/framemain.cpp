@@ -124,8 +124,8 @@ void FrameMain::_create_menubar() {
 
   // GROUP
   wxMenu *groupMenu = new wxMenu;
-  groupMenu->Append(ID_GROUP_ADD, _("New group entry") + _T("\t") + _T("Ctrl+G"));
-  groupMenu->Append(ID_GROUP_REMOVE, _("Remove group entry"));
+  groupMenu->Append(ID_GROUP_ADD, _("New group") + _T("\t") + _T("Ctrl+G"));
+  groupMenu->Append(ID_GROUP_REMOVE, _("Remove group"));
   groupMenu->AppendSeparator();
   groupMenu->Append(ID_GROUP_ENTRY_ADD, _("New entry") + _T("\t") + _T("Ctrl+E"));
   groupMenu->Append(ID_GROUP_ENTRY_REMOVE, _("Remove entry"));
@@ -149,7 +149,7 @@ void FrameMain::OnAbout(wxCommandEvent &WXUNUSED(event)) {
 }
 
 void FrameMain::OnGroupNew(wxCommandEvent &event) {
-  m_control->AddGroup("Test");
+  m_control->AddGroup("New Folder");
 }
 
 void FrameMain::OnGroupRemove(wxCommandEvent &event) {
@@ -157,7 +157,7 @@ void FrameMain::OnGroupRemove(wxCommandEvent &event) {
 }
 
 void FrameMain::OnGroupEntryNew(wxCommandEvent &event) {
-  m_control->AddGroupItem("group item");
+  m_control->AddGroupItem("New Item");
 }
 
 void FrameMain::OnGroupEntryRemove(wxCommandEvent &event) {

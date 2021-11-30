@@ -9,6 +9,29 @@
 #include <wx/dataview.h>
 #include <wx/treectrl.h>
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @brief Tree item data type
+////////////////////////////////////////////////////////////////////////////////////////////////////
+enum BKTreeItemDataType { BK_FOLDER = 0, BK_ITEM };
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @brief Tree item data
+////////////////////////////////////////////////////////////////////////////////////////////////////
+class BKTreeItemData : public wxTreeItemData {
+ public:
+  BKTreeItemData(BKTreeItemDataType type);
+  BKTreeItemData(const BKTreeItemData * data);
+
+ private:
+  BKTreeItemDataType m_type;
+
+ public:
+  BKTreeItemDataType GetType() const;
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @brief Main control class for managing treectrl and listctrl
+////////////////////////////////////////////////////////////////////////////////////////////////////
 class ControlMain {
  public:
   ControlMain(wxTreeCtrl* tree, wxDataViewListCtrl* list);
@@ -21,14 +44,18 @@ class ControlMain {
   void OnBeginDrag(wxTreeEvent& event);
   void OnBeginDrop(wxTreeEvent& event);
 
+  BKTreeItemData * GetItemData (const wxTreeItemId& id);
+  BKTreeItemData * GetItemDataCopy (const wxTreeItemId& id);
+
  private:
-  wxTreeCtrl * m_tree;
+  wxTreeCtrl* m_tree;
   wxDataViewListCtrl* m_list;
 
   wxTreeItemId m_dragged_item;
   wxTreeItemId m_root;
   bool _move_tree_item(wxTreeItemId origin, wxTreeItemId destination);
-
+  bool _is_folder(const wxTreeItemId & id);
+  bool _is_item(const wxTreeItemId & id);
 };
 
 #endif  // BOOKON_CONTOLMAIN_H
