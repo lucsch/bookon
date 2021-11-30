@@ -7,10 +7,12 @@ ControlMain::ControlMain(wxTreeCtrl *tree, wxDataViewListCtrl *list) {
 
   m_tree->Bind(wxEVT_TREE_BEGIN_DRAG, &ControlMain::OnBeginDrag, this, m_tree->GetId());
   m_tree->Bind(wxEVT_TREE_END_DRAG, &ControlMain::OnBeginDrop, this, m_tree->GetId());
-  // m_tree->Bind(wxEVT_TREE_END_DRAG, &ControlMain::OnDropPossible, this, m_tree->GetId());
 
   m_root = m_tree->AddRoot("Root");
-  // m_tree->SetBackgroundColour(m_list->GetBackgroundColour());
+  // m_tree->SetBackgroundColour();
+  wxLogDebug("background colour (list): %s", m_list->GetBackgroundColour().GetAsString());
+  wxLogDebug("background colour (tree): %s", m_tree->GetBackgroundColour().GetAsString());
+
   wxLogDebug("Testing debug!");
 }
 
@@ -105,10 +107,6 @@ void ControlMain::OnBeginDrop(wxTreeEvent &event) {
   m_dragged_item.Unset();
 }
 
-void ControlMain::OnDropPossible(wxTreeEvent &event) {
-  wxLogDebug("Drop possible!");
-  // event.GetDropEffect()
-}
 
 bool ControlMain::_move_tree_item(wxTreeItemId origin, wxTreeItemId destination) {
   // TODO: Add support for moving containers

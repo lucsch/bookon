@@ -20,7 +20,6 @@ class ControlMain {
 
   void OnBeginDrag(wxTreeEvent& event);
   void OnBeginDrop(wxTreeEvent& event);
-  void OnDropPossible(wxTreeEvent& event);
 
  private:
   wxTreeCtrl * m_tree;
