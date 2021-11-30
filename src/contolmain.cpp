@@ -24,8 +24,11 @@ ControlMain::ControlMain(wxTreeCtrl *tree, wxDataViewListCtrl *list) {
   m_tree = tree;
   m_list = list;
 
+  // connecting tree events
   m_tree->Bind(wxEVT_TREE_BEGIN_DRAG, &ControlMain::OnBeginDrag, this, m_tree->GetId());
   m_tree->Bind(wxEVT_TREE_END_DRAG, &ControlMain::OnBeginDrop, this, m_tree->GetId());
+  m_tree->Bind(wxEVT_TREE_BEGIN_LABEL_EDIT, &ControlMain::OnEditLabelBegin, this, m_tree->GetId());
+  m_tree->Bind(wxEVT_TREE_END_LABEL_EDIT, &ControlMain::OnEditLabelEnd, this, m_tree->GetId());
 
   m_root = m_tree->AddRoot("Root");
   m_tree->SetBackgroundColour(m_list->GetBackgroundColour().GetAsString());
@@ -197,4 +200,16 @@ bool ControlMain::_is_item(const wxTreeItemId &id) {
 BKTreeItemData *ControlMain::GetItemDataCopy(const wxTreeItemId &id) {
   BKTreeItemData *my_data = new BKTreeItemData((BKTreeItemData *)m_tree->GetItemData(id));
   return my_data;
+}
+
+void ControlMain::OnEditLabelBegin(wxTreeEvent &event) {
+  wxLogDebug("Edit label");
+  event.Allow();
+}
+
+void ControlMain::OnEditLabelEnd(wxTreeEvent &event) {
+  if (event.GetLabel().IsEmpty()) {
+    wxLogError("Empty name isn't allowed!");
+    event.Veto();
+  }
 }

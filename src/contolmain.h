@@ -43,6 +43,8 @@ class ControlMain {
 
   void OnBeginDrag(wxTreeEvent& event);
   void OnBeginDrop(wxTreeEvent& event);
+  void OnEditLabelBegin(wxTreeEvent & event);
+  void OnEditLabelEnd(wxTreeEvent & event);
 
   BKTreeItemData * GetItemData (const wxTreeItemId& id);
   BKTreeItemData * GetItemDataCopy (const wxTreeItemId& id);

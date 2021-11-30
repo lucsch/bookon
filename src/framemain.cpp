@@ -50,7 +50,7 @@ void FrameMain::_create_controls() {
   bSizer6 = new wxBoxSizer(wxVERTICAL);
 
   m_tree_ctrl = new wxTreeCtrl(m_panel2, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                               wxTR_DEFAULT_STYLE | wxTR_NO_LINES | wxTR_HIDE_ROOT | wxTR_TWIST_BUTTONS);
+                               wxTR_DEFAULT_STYLE | wxTR_NO_LINES | wxTR_HIDE_ROOT | wxTR_TWIST_BUTTONS | wxTR_EDIT_LABELS);
   bSizer6->Add(m_tree_ctrl, 1, wxEXPAND, 5);
 
   m_panel2->SetSizer(bSizer6);
