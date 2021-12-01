@@ -26,7 +26,8 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 find_package(Protobuf REQUIRED)
 protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS src/bookmark.proto)
 set(SRC_FILES
-        ${PROTO_SRCS})
+        ${PROTO_SRCS}
+        src/bookmark.cpp)
 add_library(${PROJECT_NAME}_lib OBJECT ${SRC_FILES})
 
 ADD_EXECUTABLE(${CMAKE_PROJECT_NAME} MACOSX_BUNDLE WIN32
@@ -35,6 +36,7 @@ ADD_EXECUTABLE(${CMAKE_PROJECT_NAME} MACOSX_BUNDLE WIN32
         src/bitmap.cpp
         src/frameabout.cpp
         src/contolmain.cpp
+        src/framebookmark.cpp
         ${CMAKE_BINARY_DIR}/version.cpp
         ${ICON_PATH}
         src/resource.rc)

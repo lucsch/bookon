@@ -1,5 +1,6 @@
 
 #include "contolmain.h"
+#include "framebookmark.h"
 
 BKTreeItemData::BKTreeItemData(BKTreeItemDataType type) {
     m_type = type;
@@ -16,9 +17,11 @@ BKTreeItemData::BKTreeItemData(const BKTreeItemData *data) {
     m_type = data->GetType();
 }
 
-const wxVector<BookMark> &BKTreeItemData::GetBookmarks() const {
+wxVector<BookMark> &BKTreeItemData::GetBookmarks()  {
     return m_bookmarks;
 }
+
+
 
 void BKTreeItemData::SetBookmarks(const wxVector<BookMark> &mBookmarks) {
     m_bookmarks = mBookmarks;
@@ -245,16 +248,20 @@ void ControlMain::OnDoubleClick(wxTreeEvent &event) {
         return;
     }
     wxLogDebug("Double-click");
-    BKTreeItemData * my_data = (BKTreeItemData*) m_tree->GetItemData(my_sel_id);
-    if (!my_data) {
-        return;
-    }
+    _display_bookmarks_for_item(my_sel_id);
+}
 
-    wxVector<BookMark> bookmarks = my_data->GetBookmarks();
-    m_list->DeleteAllItems();
-    for (wxVector<BookMark>::iterator iter = bookmarks.begin(); iter != bookmarks.end(); ++iter){
-        m_list->AppendItem(iter->GetBookMarkData());
-    }
+void ControlMain::_display_bookmarks_for_item(const wxTreeItemId &my_sel_id) {
+  BKTreeItemData * my_data = (BKTreeItemData*)m_tree->GetItemData(my_sel_id);
+  if (!my_data) {
+      return;
+  }
+
+  wxVector<BookMark> bookmarks = my_data->GetBookmarks();
+  m_list->DeleteAllItems();
+  for (wxVector<BookMark>::iterator iter = bookmarks.begin(); iter != bookmarks.end(); ++iter){
+    m_list->AppendItem(iter->GetBookMarkData());
+  }
 }
 
 void ControlMain::BookMarkEdit() {
@@ -263,8 +270,22 @@ void ControlMain::BookMarkEdit() {
 
 void ControlMain::BookMarkAdd() {
     if (!_has_item_selected()){
-        wxLogError
+        wxLogError(_("Select an item first!"));
+        return;
     }
+
+    FrameBookmark myDlg(m_list);
+    if (myDlg.ShowModal() != wxID_OK){
+      return;
+    }
+
+    wxTreeItemId my_selection (m_tree->GetSelection());
+    BookMark book = myDlg.GetBookmark();
+    BKTreeItemData * my_data = GetItemData(my_selection);
+    wxASSERT(my_data);
+    my_data->GetBookmarks().push_back(book);
+
+    _display_bookmarks_for_item(my_selection);
 }
 
 void ControlMain::BookMarkDel() {
@@ -280,36 +301,4 @@ bool ControlMain::_has_item_selected() {
         return false;
     }
     return true;
-}
-
-BookMark::BookMark() {
-    wxString m_description = wxEmptyString;
-    wxString m_path = wxEmptyString;
-    BookMarkType m_type = BKM_OPEN;
-}
-
-BookMark::BookMark(const wxString &description, const wxString &path) {
-    m_description = description;
-    m_path = path;
-}
-
-const wxVector<wxVariant> BookMark::GetBookMarkData() const {
-    wxVector<wxVariant> book_data;
-    book_data.push_back(m_description);
-    book_data.push_back(m_path);
-    switch (m_type) {
-        case BKM_OPEN:
-            book_data.push_back(_T("Open"));
-            break;
-        case BKM_COPY:
-            book_data.push_back(_T("Copy to clipboard"));
-            break;
-        case BKM_WEB:
-            book_data.push_back(_T("Web"));
-            break;
-        default:
-            book_data.push_back(wxEmptyString);
-            break;
-    }
-    return book_data;
 }

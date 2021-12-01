@@ -3,30 +3,12 @@
 
 #include "wx/wxprec.h"
 #ifndef WX_PRECOMP
+#include "bookmark.h"
 #include "wx/wx.h"
 #endif
 
 #include <wx/dataview.h>
 #include <wx/treectrl.h>
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @brief Store bookmark type
-////////////////////////////////////////////////////////////////////////////////////////////////////
-enum BookMarkType {BKM_OPEN, BKM_COPY, BKM_WEB};
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @brief Store bookmark information
-////////////////////////////////////////////////////////////////////////////////////////////////////
-class BookMark {
-public:
-    BookMark();
-    BookMark(const wxString & description, const wxString & path);
-    wxString m_description = wxEmptyString;
-    wxString m_path = wxEmptyString;
-    BookMarkType m_type = BKM_OPEN;
-    const wxVector<wxVariant>  GetBookMarkData() const;
-};
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @brief Tree item data type
@@ -43,7 +25,7 @@ public:
 
     BKTreeItemDataType GetType() const;
     void SetBookmarks(const wxVector<BookMark> &mBookmarks);
-    const wxVector<BookMark> &GetBookmarks() const;
+    wxVector<BookMark> &GetBookmarks() ;
 
 private:
     BKTreeItemDataType m_type;
@@ -85,6 +67,7 @@ private:
     bool _is_folder(const wxTreeItemId & id);
     bool _is_item(const wxTreeItemId & id);
     bool _has_item_selected();
+    void _display_bookmarks_for_item(const wxTreeItemId& my_sel_id);
 };
 
 #endif  // BOOKON_CONTOLMAIN_H
