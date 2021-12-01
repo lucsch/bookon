@@ -62,6 +62,10 @@ public:
     wxTreeItemId AddGroupItem(const wxString& string);
     void RemoveGroupItem();
 
+    void BookMarkAdd();
+    void BookMarkEdit();
+    void BookMarkDel();
+
     void OnBeginDrag(wxTreeEvent& event);
     void OnBeginDrop(wxTreeEvent& event);
     void OnEditLabelBegin(wxTreeEvent & event);
@@ -80,6 +84,7 @@ private:
     bool _move_tree_item(wxTreeItemId origin, wxTreeItemId destination);
     bool _is_folder(const wxTreeItemId & id);
     bool _is_item(const wxTreeItemId & id);
+    bool _has_item_selected();
 };
 
 #endif  // BOOKON_CONTOLMAIN_H

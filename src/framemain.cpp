@@ -104,6 +104,9 @@ void FrameMain::_connect_events() {
   Bind(wxEVT_MENU, &FrameMain::OnGroupRemove, this, ID_GROUP_REMOVE);
   Bind(wxEVT_MENU, &FrameMain::OnGroupEntryNew, this, ID_GROUP_ENTRY_ADD);
   Bind(wxEVT_MENU, &FrameMain::OnGroupEntryRemove, this, ID_GROUP_ENTRY_REMOVE);
+  Bind(wxEVT_MENU, &FrameMain::OnBookmarkAdd, this, ID_BOOK_ADD);
+  Bind(wxEVT_MENU, &FrameMain::OnBookmarkEdit, this, ID_BOOK_EDIT);
+  Bind(wxEVT_MENU, &FrameMain::OnBookmarkRemove, this, ID_BOOK_REMOVE);
 }
 
 void FrameMain::_create_statusbar() {
@@ -130,6 +133,13 @@ void FrameMain::_create_menubar() {
   groupMenu->Append(ID_GROUP_ENTRY_ADD, _("New entry") + _T("\t") + _T("Ctrl+E"));
   groupMenu->Append(ID_GROUP_ENTRY_REMOVE, _("Remove entry"));
   menuBar->Append(groupMenu, _("&Group"));
+
+  // BOOKMARK
+  wxMenu * bookmarkMenu = new wxMenu;
+  bookmarkMenu->Append(ID_BOOK_ADD, _("Add bookmark") + _T("\t") + _T("Ctrl+B"));
+  bookmarkMenu->Append(ID_BOOK_EDIT, _("Edit bookmark"));
+  bookmarkMenu->Append(ID_BOOK_REMOVE, _("Remove bookmark"));
+  menuBar->Append(bookmarkMenu, _("&Bookmarks"));
 
   // HELP
   wxMenu *helpMenu = new wxMenu;
@@ -162,4 +172,16 @@ void FrameMain::OnGroupEntryNew(wxCommandEvent &event) {
 
 void FrameMain::OnGroupEntryRemove(wxCommandEvent &event) {
   m_control->RemoveGroupItem();
+}
+
+void FrameMain::OnBookmarkAdd(wxCommandEvent &event) {
+    m_control->BookMarkAdd();
+}
+
+void FrameMain::OnBookmarkEdit(wxCommandEvent &event) {
+    m_control->BookMarkEdit();
+}
+
+void FrameMain::OnBookmarkRemove(wxCommandEvent &event) {
+    m_control->BookMarkDel();
 }

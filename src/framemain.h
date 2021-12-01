@@ -12,30 +12,42 @@
 #include <wx/systhemectrl.h>
 #include "contolmain.h"
 
-enum { ID_QUIT = wxID_EXIT, ID_ABOUT = wxID_ABOUT, ID_GROUP_ADD, ID_GROUP_REMOVE, ID_GROUP_ENTRY_ADD, ID_GROUP_ENTRY_REMOVE };
+enum { ID_QUIT = wxID_EXIT,
+        ID_ABOUT = wxID_ABOUT,
+        ID_GROUP_ADD,
+        ID_GROUP_REMOVE,
+        ID_GROUP_ENTRY_ADD,
+        ID_GROUP_ENTRY_REMOVE,
+        ID_BOOK_ADD,
+        ID_BOOK_EDIT,
+        ID_BOOK_REMOVE};
 
 class FrameMain : public wxFrame {
- public:
-  FrameMain(const wxString& title);
+public:
+    FrameMain(const wxString& title);
 
-  void OnQuit(wxCommandEvent& event);
-  void OnAbout(wxCommandEvent& event);
-  void OnGroupNew(wxCommandEvent& event);
-  void OnGroupRemove(wxCommandEvent& event);
-  void OnGroupEntryNew(wxCommandEvent & event);
-  void OnGroupEntryRemove(wxCommandEvent & event);
+    void OnQuit(wxCommandEvent& event);
+    void OnAbout(wxCommandEvent& event);
+    void OnGroupNew(wxCommandEvent& event);
+    void OnGroupRemove(wxCommandEvent& event);
+    void OnGroupEntryNew(wxCommandEvent & event);
+    void OnGroupEntryRemove(wxCommandEvent & event);
 
- private:
-  void _create_menubar();
-  void _create_statusbar();
-  void _connect_events();
-  void _create_controls();
+    void OnBookmarkAdd(wxCommandEvent & event);
+    void OnBookmarkEdit(wxCommandEvent & event);
+    void OnBookmarkRemove(wxCommandEvent & event);
 
-  wxTreeCtrl* m_tree_ctrl;
-  wxDataViewListCtrl* m_list_ctrl;
-  wxSearchCtrl* m_search_ctrl;
+private:
+    void _create_menubar();
+    void _create_statusbar();
+    void _connect_events();
+    void _create_controls();
 
-  ControlMain* m_control = nullptr;
+    wxTreeCtrl* m_tree_ctrl;
+    wxDataViewListCtrl* m_list_ctrl;
+    wxSearchCtrl* m_search_ctrl;
+
+    ControlMain* m_control = nullptr;
 };
 
 #endif

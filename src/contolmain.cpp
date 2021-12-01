@@ -257,6 +257,31 @@ void ControlMain::OnDoubleClick(wxTreeEvent &event) {
     }
 }
 
+void ControlMain::BookMarkEdit() {
+
+}
+
+void ControlMain::BookMarkAdd() {
+    if (!_has_item_selected()){
+        wxLogError
+    }
+}
+
+void ControlMain::BookMarkDel() {
+
+}
+
+bool ControlMain::_has_item_selected() {
+    wxTreeItemId id (m_tree->GetSelection());
+    if (!id.IsOk()){
+        return false;
+    }
+    if (!_is_item(id)){
+        return false;
+    }
+    return true;
+}
+
 BookMark::BookMark() {
     wxString m_description = wxEmptyString;
     wxString m_path = wxEmptyString;
