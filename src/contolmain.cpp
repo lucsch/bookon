@@ -160,11 +160,6 @@ void ControlMain::OnBeginDrag(wxTreeEvent &event) {
     m_dragged_item = event.GetItem();
     wxLogDebug("Begin drag %s", m_tree->GetItemText(event.GetItem()));
     event.Allow();
-
-    //  wxTextDataObject *obj = new wxTextDataObject;
-    //  obj->SetText( m_tree->GetItemText(event.GetItem()));
-    //  event.SetDataObject( obj );
-    //  event.SetDragFlags(wxDrag_CopyOnly); // allows both copy and move
 }
 
 void ControlMain::OnBeginDrop(wxTreeEvent &event) {
@@ -258,12 +253,7 @@ void ControlMain::OnDoubleClick(wxTreeEvent &event) {
     wxVector<BookMark> bookmarks = my_data->GetBookmarks();
     m_list->DeleteAllItems();
     for (wxVector<BookMark>::iterator iter = bookmarks.begin(); iter != bookmarks.end(); ++iter){
-//        wxVector<wxVariant> data;
-//        data.push_back("Test");
-//        data.push_back("Test1");
-//        data.push_back("Test2");
         m_list->AppendItem(iter->GetBookMarkData());
-        // m_list->AppendItem(data);
     }
 }
 
