@@ -15,6 +15,10 @@ BKTreeItemData::BKTreeItemData(const BKTreeItemData *data) {
         return;
     }
     m_type = data->GetType();
+    m_bookmarks.clear();
+    for (wxVector<BookMark>::const_iterator iter = data->m_bookmarks.begin(); iter != data->m_bookmarks.end(); ++ iter){
+      m_bookmarks.push_back(*iter);
+    }
 }
 
 wxVector<BookMark> &BKTreeItemData::GetBookmarks()  {
