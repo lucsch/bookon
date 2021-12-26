@@ -310,7 +310,22 @@ void ControlMain::BookMarkAdd() {
   _display_bookmarks_for_item(my_selection);
 }
 
-void ControlMain::BookMarkDel() {}
+void ControlMain::BookMarkDel() {
+  int my_list_sel_index = m_list->GetSelectedRow();
+  if (my_list_sel_index == wxNOT_FOUND) {
+    wxLogWarning("Please select an item first!");
+    return;
+  }
+
+  int my_bk_index = (int)m_list->GetItemData(m_list->GetSelection());
+  BKTreeItemData *my_data = (BKTreeItemData *)m_tree->GetItemData(m_tree->GetSelection());
+  if (!my_data) {
+    return;
+  }
+  wxVector<BookMark>::iterator  iter = my_data->GetBookmarks().begin();
+  my_data->GetBookmarks().erase(iter + my_bk_index);
+  _display_bookmarks_for_item(m_tree->GetSelection());
+}
 
 bool ControlMain::_has_item_selected() {
   wxTreeItemId id(m_tree->GetSelection());
