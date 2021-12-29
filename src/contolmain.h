@@ -57,7 +57,9 @@ public:
     BKTreeItemData * GetItemData (const wxTreeItemId& id);
     BKTreeItemData * GetItemDataCopy (const wxTreeItemId& id);
 
-private:
+    bool SaveFile(const wxString& pathname);
+
+   private:
     wxTreeCtrl* m_tree;
     wxDataViewListCtrl* m_list;
 

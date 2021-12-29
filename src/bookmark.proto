@@ -1,17 +1,30 @@
 syntax = "proto2";
 package bk;
 
-message Bookmark {
-  optional string description = 2;
-  optional string command = 3;
-  enum Action {
-    OPEN = 0;
-    WEB = 1;
-    COPY = 2;
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @brief Store the folder data and associated bookmarks
+////////////////////////////////////////////////////////////////////////////////////////////////////
+message Folder {
+  optional string name = 1;
+  optional bool is_directory = 2;
+
+  message Bookmark {
+    optional string description = 1;
+    optional string command = 2;
+    enum Action {
+      OPEN = 0;
+      WEB = 1;
+      COPY = 2;
+    }
+    optional Action action = 3 [default = OPEN];
   }
-  optional Action action = 4 [default = OPEN];
+
+  repeated Bookmark bookmarks = 3;
 }
 
-message Book {
-  repeated Bookmark bookmarks = 1;
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @brief Store all folders
+////////////////////////////////////////////////////////////////////////////////////////////////////
+message FolderList {
+  repeated Folder folders = 1;
 }

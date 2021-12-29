@@ -8,6 +8,7 @@
 #endif
 #include <wx/splitter.h>
 #include <wx/srchctrl.h>
+#include <wx/filename.h>
 
 #include <wx/systhemectrl.h>
 #include "contolmain.h"
@@ -20,7 +21,11 @@ enum { ID_QUIT = wxID_EXIT,
         ID_GROUP_ENTRY_REMOVE,
         ID_BOOK_ADD,
         ID_BOOK_EDIT,
-        ID_BOOK_REMOVE};
+        ID_BOOK_REMOVE,
+        ID_FILE_NEW = wxID_NEW,
+        ID_FILE_OPEN = wxID_OPEN,
+        ID_FILE_SAVE = wxID_SAVE,
+        ID_FILE_SAVE_AS = wxID_SAVEAS};
 
 class FrameMain : public wxFrame {
 public:
@@ -37,6 +42,11 @@ public:
     void OnBookmarkEdit(wxCommandEvent & event);
     void OnBookmarkRemove(wxCommandEvent & event);
 
+    void OnNew(wxCommandEvent & event);
+    void OnOpen(wxCommandEvent & event);
+    void OnSave(wxCommandEvent & event);
+    void OnSaveAs(wxCommandEvent & event);
+
 private:
     void _create_menubar();
     void _create_statusbar();
@@ -48,6 +58,8 @@ private:
     wxSearchCtrl* m_search_ctrl;
 
     ControlMain* m_control = nullptr;
+    wxString m_document_name = wxEmptyString;
+    wxString m_soft_name = _("Bookon");
 };
 
 #endif

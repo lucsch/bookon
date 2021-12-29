@@ -337,3 +337,9 @@ bool ControlMain::_has_item_selected() {
   }
   return true;
 }
+
+bool ControlMain::SaveFile(const wxString &pathname) {
+  
+
+  return false;
+}

@@ -99,6 +99,10 @@ void FrameMain::_create_controls() {
 
 void FrameMain::_connect_events() {
   Bind(wxEVT_MENU, &FrameMain::OnQuit, this, ID_QUIT);
+  Bind(wxEVT_MENU, &FrameMain::OnNew, this, ID_FILE_NEW);
+  Bind(wxEVT_MENU, &FrameMain::OnOpen, this, ID_FILE_OPEN);
+  Bind(wxEVT_MENU, &FrameMain::OnSave, this, ID_FILE_SAVE);
+  Bind(wxEVT_MENU, &FrameMain::OnSaveAs, this, ID_FILE_SAVE_AS);
   Bind(wxEVT_MENU, &FrameMain::OnAbout, this, ID_ABOUT);
   Bind(wxEVT_MENU, &FrameMain::OnGroupNew, this, ID_GROUP_ADD);
   Bind(wxEVT_MENU, &FrameMain::OnGroupRemove, this, ID_GROUP_REMOVE);
@@ -122,6 +126,12 @@ void FrameMain::_create_menubar() {
 
   // FILE
   wxMenu *fileMenu = new wxMenu;
+  fileMenu->Append(ID_FILE_NEW, _("New") + "\tCtrl+N");
+  fileMenu->AppendSeparator();
+  fileMenu->Append(ID_FILE_OPEN, _("Open...") + "\tCtrl+O");
+  fileMenu->Append(ID_FILE_SAVE, _("Save") + "\tCtrl+S");
+  fileMenu->Append(ID_FILE_SAVE_AS, _("Save as...") + "\tCtrl+Alt+S");
+  fileMenu->AppendSeparator();
   fileMenu->Append(ID_QUIT, "E&xit\tAlt-X", "Quit this program");
   menuBar->Append(fileMenu, "&File");
 
@@ -184,4 +194,25 @@ void FrameMain::OnBookmarkEdit(wxCommandEvent &event) {
 
 void FrameMain::OnBookmarkRemove(wxCommandEvent &event) {
     m_control->BookMarkDel();
+}
+
+void FrameMain::OnNew(wxCommandEvent &event) {
+  m_document_name = _("UNTITLED");
+  SetTitle(m_soft_name + " - " + m_document_name);
+}
+
+void FrameMain::OnOpen(wxCommandEvent &event) {
+
+}
+
+void FrameMain::OnSave(wxCommandEvent &event) {
+  // TODO: remove this temp code
+  wxFileName my_save_path (wxGetHomeDir(), "test_bookon_save.bkdoc");
+  wxLogDebug("my save path: %s", my_save_path.GetFullPath());
+  wxASSERT(m_control);
+  m_control->SaveFile(my_save_path.GetFullPath());
+}
+
+void FrameMain::OnSaveAs(wxCommandEvent &event) {
+
 }
