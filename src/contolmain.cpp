@@ -2,6 +2,8 @@
 #include "contolmain.h"
 
 #include "framebookmark.h"
+#include "bookmark.pb.h"
+using namespace bk;
 
 BKTreeItemData::BKTreeItemData(BKTreeItemDataType type) {
   m_type = type;
@@ -318,7 +320,7 @@ void ControlMain::BookMarkDel() {
   }
 
   int my_bk_index = (int)m_list->GetItemData(m_list->GetSelection());
-  BKTreeItemData *my_data = (BKTreeItemData *)m_tree->GetItemData(m_tree->GetSelection());
+  auto *my_data = dynamic_cast<BKTreeItemData*>(m_tree->GetItemData(m_tree->GetSelection()));
   if (!my_data) {
     return;
   }
@@ -339,7 +341,40 @@ bool ControlMain::_has_item_selected() {
 }
 
 bool ControlMain::SaveFile(const wxString &pathname) {
-  
+  // protobuf structure
+  FolderList my_list;
+
+  // iterate tree ctrl
+  _iterate_tree(m_tree->GetRootItem(), &my_list);
 
   return false;
+}
+
+void ControlMain::_iterate_tree(const wxTreeItemId &idParent, bk::FolderList *folder_list, wxTreeItemIdValue cookie) {
+  wxTreeItemId id;
+
+  if (!cookie){
+    id = m_tree->GetFirstChild(idParent, cookie);
+  }
+  else {
+    id = m_tree->GetNextChild(idParent, cookie);
+  }
+  if (!id.IsOk()){
+    return;
+  }
+
+  wxString my_text = m_tree->GetItemText(id);
+  auto * my_data = dynamic_cast<BKTreeItemData*>(m_tree->GetItemData(id));
+  wxASSERT(my_data);
+  if (my_data->GetType() == BK_FOLDER){
+    wxLogMessage(my_text + " - Folder");
+  }else {
+    int my_num_books = my_data->GetBookmarks().size();
+    wxLogMessage("%s - %d bookmark(s)", my_text, my_num_books);
+  }
+
+  if (m_tree->ItemHasChildren(id)){
+    _iterate_tree(id, folder_list);
+  }
+  _iterate_tree(idParent, folder_list, cookie);
 }

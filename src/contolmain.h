@@ -5,6 +5,7 @@
 #ifndef WX_PRECOMP
 #include "bookmark.h"
 #include "wx/wx.h"
+#include "bookmark.pb.h"
 #endif
 
 #include <wx/dataview.h>
@@ -70,6 +71,7 @@ public:
     bool _is_item(const wxTreeItemId & id);
     bool _has_item_selected();
     void _display_bookmarks_for_item(const wxTreeItemId& my_sel_id);
+    void _iterate_tree(const wxTreeItemId& idParent, bk::FolderList* folder_list, wxTreeItemIdValue cookie=0);
 };
 
 #endif  // BOOKON_CONTOLMAIN_H
