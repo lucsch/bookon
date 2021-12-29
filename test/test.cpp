@@ -13,9 +13,7 @@ TEST(TestSuite, Empty){
 TEST(TestSuite, InitBookMark){
   Folder fold;
   fold.set_name("test_folder");
-  fold.set_is_directory(false);
   ASSERT_EQ(fold.name(), "test_folder");
-  ASSERT_EQ(fold.is_directory(), false);
 }
 
 TEST(TestSuite, WriteReadOneBookMark){
@@ -25,7 +23,6 @@ TEST(TestSuite, WriteReadOneBookMark){
 
   Folder * my_fold = my_list.add_folders();
   my_fold->set_name("test_folder");
-  my_fold->set_is_directory(false);
 
   Folder::Bookmark * my_book = my_fold->add_bookmarks();
   my_book->set_description("Open google");

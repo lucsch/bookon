@@ -71,7 +71,8 @@ public:
     bool _is_item(const wxTreeItemId & id);
     bool _has_item_selected();
     void _display_bookmarks_for_item(const wxTreeItemId& my_sel_id);
-    void _iterate_tree(const wxTreeItemId& idParent, bk::FolderList* folder_list, wxTreeItemIdValue cookie=0);
+    void _iterate_tree(const wxTreeItemId& idParent, bk::FolderList* folder_list, bk::Folder* actual_folder = nullptr,
+                       wxTreeItemIdValue cookie = 0);
 };
 
 #endif  // BOOKON_CONTOLMAIN_H

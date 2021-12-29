@@ -1,8 +1,10 @@
 
 #include "contolmain.h"
 
-#include "framebookmark.h"
 #include "bookmark.pb.h"
+#include "framebookmark.h"
+#include <fstream>
+#include <iostream>
 using namespace bk;
 
 BKTreeItemData::BKTreeItemData(BKTreeItemDataType type) {
@@ -320,11 +322,11 @@ void ControlMain::BookMarkDel() {
   }
 
   int my_bk_index = (int)m_list->GetItemData(m_list->GetSelection());
-  auto *my_data = dynamic_cast<BKTreeItemData*>(m_tree->GetItemData(m_tree->GetSelection()));
+  auto *my_data = dynamic_cast<BKTreeItemData *>(m_tree->GetItemData(m_tree->GetSelection()));
   if (!my_data) {
     return;
   }
-  wxVector<BookMark>::iterator  iter = my_data->GetBookmarks().begin();
+  wxVector<BookMark>::iterator iter = my_data->GetBookmarks().begin();
   my_data->GetBookmarks().erase(iter + my_bk_index);
   _display_bookmarks_for_item(m_tree->GetSelection());
 }
@@ -345,36 +347,64 @@ bool ControlMain::SaveFile(const wxString &pathname) {
   FolderList my_list;
 
   // iterate tree ctrl
-  _iterate_tree(m_tree->GetRootItem(), &my_list);
+  _iterate_tree(m_tree->GetRootItem(), &my_list, nullptr, nullptr);
 
-  return false;
+  std::fstream output(pathname.ToStdString(), std::ios::out | std::ios::trunc | std::ios::binary);
+  my_list.SerializeToOstream(&output);
+  return true;
 }
 
-void ControlMain::_iterate_tree(const wxTreeItemId &idParent, bk::FolderList *folder_list, wxTreeItemIdValue cookie) {
+void ControlMain::_iterate_tree(const wxTreeItemId &idParent, bk::FolderList *folder_list, bk::Folder *actual_folder,
+                                wxTreeItemIdValue cookie) {
   wxTreeItemId id;
 
-  if (!cookie){
+  if (!cookie) {
     id = m_tree->GetFirstChild(idParent, cookie);
-  }
-  else {
+  } else {
     id = m_tree->GetNextChild(idParent, cookie);
   }
-  if (!id.IsOk()){
+  if (!id.IsOk()) {
     return;
   }
 
   wxString my_text = m_tree->GetItemText(id);
-  auto * my_data = dynamic_cast<BKTreeItemData*>(m_tree->GetItemData(id));
+  auto *my_data = dynamic_cast<BKTreeItemData *>(m_tree->GetItemData(id));
   wxASSERT(my_data);
-  if (my_data->GetType() == BK_FOLDER){
+  if (my_data->GetType() == BK_FOLDER) {
     wxLogMessage(my_text + " - Folder");
-  }else {
+    if (actual_folder == nullptr) {
+      actual_folder = folder_list->add_folders();
+    } else {
+      actual_folder = actual_folder->add_folders();
+    }
+    actual_folder->set_name(my_text);
+  } else {
+    if (actual_folder == nullptr) {
+      actual_folder = folder_list->add_folders();
+    }
+    wxVector<BookMark> my_books = my_data->GetBookmarks();
+    for (wxVector<BookMark>::iterator iter = my_books.begin(); iter != my_books.end(); ++iter) {
+      Folder::Bookmark *my_pbk = actual_folder->add_bookmarks();
+      my_pbk->set_description(iter->m_description);
+      my_pbk->set_command(iter->m_path);
+      switch (iter->m_type) {
+        case BKM_COPY:
+          my_pbk->set_action(bk::Folder_Bookmark_Action_COPY);
+          break;
+        case BKM_OPEN:
+          my_pbk->set_action(bk::Folder_Bookmark_Action_OPEN);
+          break;
+        case BKM_WEB:
+          my_pbk->set_action(bk::Folder_Bookmark_Action_WEB);
+          break;
+      }
+    }
     int my_num_books = my_data->GetBookmarks().size();
     wxLogMessage("%s - %d bookmark(s)", my_text, my_num_books);
   }
 
-  if (m_tree->ItemHasChildren(id)){
-    _iterate_tree(id, folder_list);
+  if (m_tree->ItemHasChildren(id)) {
+    _iterate_tree(id, folder_list, actual_folder);
   }
-  _iterate_tree(idParent, folder_list, cookie);
+  _iterate_tree(idParent, folder_list, nullptr, cookie);
 }
