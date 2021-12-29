@@ -19,6 +19,11 @@ set(MACOSX_BUNDLE_ICON_FILE bookon.icns)
 set(ICON_PATH "${CMAKE_SOURCE_DIR}/art/bookon.icns")
 set_source_files_properties(${ICON_PATH} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 
+# remove deprecated warnings on windows
+if(MSVC)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+endif()
+
 INCLUDE_DIRECTORIES(src)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
