@@ -202,15 +202,21 @@ void FrameMain::OnNew(wxCommandEvent &event) {
 }
 
 void FrameMain::OnOpen(wxCommandEvent &event) {
-
+  wxFileDialog my_dlg (this, _("Open file"), "", "", "bkdoc files (*.bkdoc)|*.bkdoc", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+  if (my_dlg.ShowModal() == wxID_CANCEL){
+    return;
+  }
+  wxASSERT(m_control);
+  m_control->OpenFile(my_dlg.GetPath());
 }
 
 void FrameMain::OnSave(wxCommandEvent &event) {
-  // TODO: remove this temp code
-  wxFileName my_save_path (wxGetHomeDir(), "test_bookon_save.bkdoc");
-  wxLogDebug("my save path: %s", my_save_path.GetFullPath());
+  wxFileDialog my_dlg (this, _("Save file"), "", "", "bkdoc files (*.bkdoc)|*.bkdoc", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+  if (my_dlg.ShowModal() == wxID_CANCEL){
+    return;
+  }
   wxASSERT(m_control);
-  m_control->SaveFile(my_save_path.GetFullPath());
+  m_control->SaveFile(my_dlg.GetPath());
 }
 
 void FrameMain::OnSaveAs(wxCommandEvent &event) {

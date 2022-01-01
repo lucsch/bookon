@@ -378,10 +378,15 @@ void ControlMain::_iterate_tree(const wxTreeItemId &idParent, bk::FolderList *fo
       actual_folder = actual_folder->add_folders();
     }
     actual_folder->set_name(my_text);
+    actual_folder->set_is_group(true);
   } else {
     if (actual_folder == nullptr) {
       actual_folder = folder_list->add_folders();
+    } else {
+      actual_folder = actual_folder->add_folders();
     }
+    actual_folder->set_is_group(false);
+    actual_folder->set_name(my_text);
     wxVector<BookMark> my_books = my_data->GetBookmarks();
     for (wxVector<BookMark>::iterator iter = my_books.begin(); iter != my_books.end(); ++iter) {
       Folder::Bookmark *my_pbk = actual_folder->add_bookmarks();
@@ -402,9 +407,59 @@ void ControlMain::_iterate_tree(const wxTreeItemId &idParent, bk::FolderList *fo
     int my_num_books = my_data->GetBookmarks().size();
     wxLogMessage("%s - %d bookmark(s)", my_text, my_num_books);
   }
-
   if (m_tree->ItemHasChildren(id)) {
     _iterate_tree(id, folder_list, actual_folder);
   }
   _iterate_tree(idParent, folder_list, nullptr, cookie);
+}
+
+void ControlMain::OpenFile(const wxString &pathname) {
+  // read the data
+  FolderList my_list;
+  std::fstream input(pathname.ToStdString(), std::ios::in | std::ios::binary);
+  if(!my_list.ParseFromIstream(&input)){
+   wxLogError("Error reading: '%s'", pathname);
+   return;
+  }
+
+  // iterate the data and populate the treectrl
+  m_tree->DeleteAllItems();
+  wxTreeItemId rootid = m_tree->AddRoot("Root");
+  for (int i = 0; i< my_list.folders_size(); i++) {
+    Folder my_folder = my_list.folders(i);
+    _iterate_tree_write(rootid, my_folder);
+  }
+}
+
+void ControlMain::_iterate_tree_write(const wxTreeItemId idParent, const Folder &folder) {
+  if (folder.is_group()){
+    wxTreeItemId id = m_tree->AppendItem(idParent, folder.name(), -1, -1, new BKTreeItemData(BK_FOLDER));
+    // re-entring method for adding folders
+    for (int f = 0; f<folder.folders_size(); f++){
+      _iterate_tree_write(id, folder.folders(f));
+    }
+  }
+  else {
+    wxVector<BookMark> my_bookmarks;
+    for (int b = 0; b < folder.bookmarks_size(); b++){
+      BookMark my_book;
+      my_book.m_description = folder.bookmarks(b).description();
+      my_book.m_path = folder.bookmarks(b).command();
+      switch (folder.bookmarks(b).action()) {
+        case bk::Folder_Bookmark_Action_OPEN:
+          my_book.m_type = BKM_OPEN;
+          break;
+        case bk::Folder_Bookmark_Action_WEB:
+          my_book.m_type = BKM_WEB;
+          break;
+        case bk::Folder_Bookmark_Action_COPY:
+          my_book.m_type = BKM_COPY;
+          break;
+      }
+      my_bookmarks.push_back(my_book);
+    }
+    BKTreeItemData * ptreedata = new BKTreeItemData(BK_ITEM);
+    ptreedata->SetBookmarks(my_bookmarks);
+    m_tree->AppendItem(idParent,  folder.name(), -1,-1, ptreedata);
+  }
 }

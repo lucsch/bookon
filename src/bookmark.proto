@@ -6,6 +6,7 @@ package bk;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 message Folder {
   optional string name = 1;
+  optional bool is_group = 2;
 
   message Bookmark {
     optional string description = 1;
@@ -18,8 +19,8 @@ message Folder {
     optional Action action = 3 [default = OPEN];
   }
 
-  repeated Folder folders = 2;
-  repeated Bookmark bookmarks = 3;
+  repeated Folder folders = 3;
+  repeated Bookmark bookmarks = 4;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
