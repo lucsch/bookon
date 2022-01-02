@@ -58,6 +58,7 @@ public:
 
     // list operations
     void OnDoubleClickList (wxDataViewEvent & event);
+    void OnRightClickMenu (wxDataViewEvent & event);
 
     BKTreeItemData * GetItemData (const wxTreeItemId& id);
     BKTreeItemData * GetItemDataCopy (const wxTreeItemId& id);

@@ -51,6 +51,7 @@ ControlMain::ControlMain(wxTreeCtrl *tree, wxDataViewListCtrl *list) {
 
   // connecting list event
   m_list->Bind(wxEVT_DATAVIEW_ITEM_ACTIVATED, &ControlMain::OnDoubleClickList, this, m_list->GetId());
+  m_list->Bind(wxEVT_DATAVIEW_ITEM_CONTEXT_MENU, &ControlMain::OnRightClickMenu, this, m_list->GetId());
 
   m_root = m_tree->AddRoot("Root");
   m_tree->SetBackgroundColour(m_list->GetBackgroundColour().GetAsString());
@@ -448,4 +449,12 @@ void ControlMain::OnDoubleClickList(wxDataViewEvent &event) {
   bookmarks[my_index].DoAction();
 }
 
+void ControlMain::OnRightClickMenu(wxDataViewEvent &event) {
+  if (!event.GetItem().IsOk()){
+    event.Veto();
+    return;
+  }
 
+  
+
+}
