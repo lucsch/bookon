@@ -11,7 +11,7 @@ BookMark::BookMark(const wxString &description, const wxString &path) {
   m_path = path;
 }
 
-const wxVector<wxVariant> BookMark::GetBookMarkData() const {
+const wxVector<wxVariant> BookMark::GetBookMarkDataForList() const {
   wxVector<wxVariant> book_data;
   book_data.push_back(m_description);
   book_data.push_back(m_path);
@@ -30,4 +30,36 @@ const wxVector<wxVariant> BookMark::GetBookMarkData() const {
       break;
   }
   return book_data;
+}
+
+void BookMark::SaveToProto(bk::Folder::Bookmark * pbk) {
+  pbk->set_description(m_description);
+  pbk->set_command(m_path);
+  switch (m_type) {
+    case BKM_OPEN:
+      pbk->set_action(bk::Folder_Bookmark_Action_OPEN);
+      break;
+    case BKM_COPY:
+      pbk->set_action(bk::Folder_Bookmark_Action_COPY);
+      break;
+    case BKM_WEB:
+      pbk->set_action(bk::Folder_Bookmark_Action_WEB);
+      break;
+  }
+}
+
+void BookMark::LoadFromProto(const Folder::Bookmark &proto_book) {
+  m_description = proto_book.description();
+  m_path = proto_book.command();
+  switch (proto_book.action()) {
+    case bk::Folder_Bookmark_Action_OPEN:
+      m_type = BKM_OPEN;
+      break;
+    case bk::Folder_Bookmark_Action_COPY:
+      m_type = BKM_COPY;
+      break;
+    case bk::Folder_Bookmark_Action_WEB:
+      m_type = BKM_WEB;
+      break;
+  }
 }

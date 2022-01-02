@@ -74,7 +74,7 @@ public:
     void _display_bookmarks_for_item(const wxTreeItemId& my_sel_id);
     void _iterate_tree(const wxTreeItemId& idParent, bk::FolderList* folder_list, bk::Folder* actual_folder = nullptr,
                        wxTreeItemIdValue cookie = 0);
-    void _iterate_tree_write(const wxTreeItemId idParent, const bk::Folder & folder);
+    void _populate_tree(const wxTreeItemId idParent, const bk::Folder & folder);
 };
 
 #endif  // BOOKON_CONTOLMAIN_H

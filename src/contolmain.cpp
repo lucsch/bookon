@@ -268,7 +268,7 @@ void ControlMain::_display_bookmarks_for_item(const wxTreeItemId &my_sel_id) {
   m_list->DeleteAllItems();
   for (wxVector<BookMark>::iterator iter = bookmarks.begin(); iter != bookmarks.end(); ++iter) {
     int my_index = iter - bookmarks.begin();
-    m_list->AppendItem(iter->GetBookMarkData(), my_index);
+    m_list->AppendItem(iter->GetBookMarkDataForList(), my_index);
   }
 }
 
@@ -390,19 +390,7 @@ void ControlMain::_iterate_tree(const wxTreeItemId &idParent, bk::FolderList *fo
     wxVector<BookMark> my_books = my_data->GetBookmarks();
     for (wxVector<BookMark>::iterator iter = my_books.begin(); iter != my_books.end(); ++iter) {
       Folder::Bookmark *my_pbk = actual_folder->add_bookmarks();
-      my_pbk->set_description(iter->m_description);
-      my_pbk->set_command(iter->m_path);
-      switch (iter->m_type) {
-        case BKM_COPY:
-          my_pbk->set_action(bk::Folder_Bookmark_Action_COPY);
-          break;
-        case BKM_OPEN:
-          my_pbk->set_action(bk::Folder_Bookmark_Action_OPEN);
-          break;
-        case BKM_WEB:
-          my_pbk->set_action(bk::Folder_Bookmark_Action_WEB);
-          break;
-      }
+      iter->SaveToProto(my_pbk);
     }
     int my_num_books = my_data->GetBookmarks().size();
     wxLogMessage("%s - %d bookmark(s)", my_text, my_num_books);
@@ -427,35 +415,23 @@ void ControlMain::OpenFile(const wxString &pathname) {
   wxTreeItemId rootid = m_tree->AddRoot("Root");
   for (int i = 0; i< my_list.folders_size(); i++) {
     Folder my_folder = my_list.folders(i);
-    _iterate_tree_write(rootid, my_folder);
+    _populate_tree(rootid, my_folder);
   }
 }
 
-void ControlMain::_iterate_tree_write(const wxTreeItemId idParent, const Folder &folder) {
+void ControlMain::_populate_tree(const wxTreeItemId idParent, const Folder &folder) {
   if (folder.is_group()){
     wxTreeItemId id = m_tree->AppendItem(idParent, folder.name(), -1, -1, new BKTreeItemData(BK_FOLDER));
     // re-entring method for adding folders
     for (int f = 0; f<folder.folders_size(); f++){
-      _iterate_tree_write(id, folder.folders(f));
+      _populate_tree(id, folder.folders(f));
     }
   }
   else {
     wxVector<BookMark> my_bookmarks;
     for (int b = 0; b < folder.bookmarks_size(); b++){
       BookMark my_book;
-      my_book.m_description = folder.bookmarks(b).description();
-      my_book.m_path = folder.bookmarks(b).command();
-      switch (folder.bookmarks(b).action()) {
-        case bk::Folder_Bookmark_Action_OPEN:
-          my_book.m_type = BKM_OPEN;
-          break;
-        case bk::Folder_Bookmark_Action_WEB:
-          my_book.m_type = BKM_WEB;
-          break;
-        case bk::Folder_Bookmark_Action_COPY:
-          my_book.m_type = BKM_COPY;
-          break;
-      }
+      my_book.LoadFromProto(folder.bookmarks(b));
       my_bookmarks.push_back(my_book);
     }
     BKTreeItemData * ptreedata = new BKTreeItemData(BK_ITEM);

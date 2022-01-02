@@ -6,6 +6,8 @@
 #include "bookmark.h"
 #include "wx/wx.h"
 #endif
+#include "bookmark.pb.h"
+using namespace bk;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @brief Store bookmark type
@@ -22,6 +24,11 @@ class BookMark {
   wxString m_description = wxEmptyString;
   wxString m_path = wxEmptyString;
   BookMarkType m_type = BKM_OPEN;
-  const wxVector<wxVariant> GetBookMarkData() const;
+  const wxVector<wxVariant> GetBookMarkDataForList() const;
+
+  // save and load protobuf data
+  void SaveToProto(bk::Folder::Bookmark * pbk);
+  void LoadFromProto (const bk::Folder::Bookmark & proto_book);
+
 };
-#endif  // BOOKON_BOOKMARK_H
+#endif // BOOKON_BOOKMARK_H
