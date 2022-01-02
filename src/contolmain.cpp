@@ -445,6 +445,7 @@ void ControlMain::OnDoubleClickList(wxDataViewEvent &event) {
   wxVector<BookMark> bookmarks = my_data->GetBookmarks();
   wxASSERT(my_index >= 0 && my_index < bookmarks.size());
   wxLogDebug("Selected bookmark is: %s", bookmarks[my_index].m_description);
+  bookmarks[my_index].DoAction();
 }
 
 

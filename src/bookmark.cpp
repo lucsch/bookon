@@ -63,3 +63,24 @@ void BookMark::LoadFromProto(const Folder::Bookmark &proto_book) {
       break;
   }
 }
+
+void BookMark::DoAction() {
+  if (m_path.IsEmpty()){
+    wxLogError("No action defined for this bookmark!");
+    return;
+  }
+
+  switch (m_type) {
+    case BKM_OPEN:
+      wxLaunchDefaultApplication(m_path);
+      break;
+    case BKM_WEB:
+      wxLaunchDefaultBrowser(m_path);
+      break;
+    case BKM_COPY:
+      if (wxTheClipboard->Open()) {
+        wxTheClipboard->SetData(new wxTextDataObject(m_path));
+        wxTheClipboard->Close();
+      }
+  }
+}
