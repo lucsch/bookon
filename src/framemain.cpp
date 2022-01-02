@@ -198,6 +198,10 @@ void FrameMain::OnBookmarkRemove(wxCommandEvent &event) {
 
 void FrameMain::OnNew(wxCommandEvent &event) {
   m_document_name = _("UNTITLED");
+  _update_title();
+}
+
+void FrameMain::_update_title() {
   SetTitle(m_soft_name + " - " + m_document_name);
 }
 
@@ -225,4 +229,6 @@ void FrameMain::OnSaveAs(wxCommandEvent &event) {
 void FrameMain::do_open_file(const wxString &filename) {
   wxASSERT(m_control);
   m_control->OpenFile(filename);
+  m_document_name = filename;
+  _update_title();
 }

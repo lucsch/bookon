@@ -401,6 +401,8 @@ void ControlMain::OpenFile(const wxString &pathname) {
     Folder my_folder = my_list.folders(i);
     _populate_tree(rootid, my_folder);
   }
+
+  m_tree->ExpandAll();
 }
 
 void ControlMain::_populate_tree(const wxTreeItemId idParent, const Folder &folder) {

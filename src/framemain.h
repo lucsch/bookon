@@ -62,6 +62,7 @@ private:
     ControlMain* m_control = nullptr;
     wxString m_document_name = wxEmptyString;
     wxString m_soft_name = _("Bookon");
+    void _update_title();
 };
 
 #endif
