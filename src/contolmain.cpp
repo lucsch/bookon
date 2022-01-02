@@ -346,45 +346,35 @@ bool ControlMain::SaveFile(const wxString &pathname) {
   // protobuf structure
   FolderList my_list;
 
-  // iterate tree ctrl
-  _iterate_tree(m_tree->GetRootItem(), &my_list, nullptr, nullptr);
+  // iterate first level tree ctrl
+  wxTreeItemId root = m_tree->GetRootItem();
+  wxASSERT(root.IsOk());
+  wxTreeItemId id;
+  wxTreeItemIdValue cookie = 0;
+  for (int i = 0; i< m_tree->GetChildrenCount(root, false); i++){
+    if (!cookie){
+      id = m_tree->GetFirstChild(root, cookie);
+    } else {
+      id = m_tree->GetNextChild(root, cookie);
+    }
+    wxASSERT(id.IsOk());
+    _iterate_tree(id, my_list.add_folders());
+  }
 
   std::fstream output(pathname.ToStdString(), std::ios::out | std::ios::trunc | std::ios::binary);
   my_list.SerializeToOstream(&output);
   return true;
 }
 
-void ControlMain::_iterate_tree(const wxTreeItemId &idParent, bk::FolderList *folder_list, bk::Folder *actual_folder,
-                                wxTreeItemIdValue cookie) {
-  wxTreeItemId id;
-
-  if (!cookie) {
-    id = m_tree->GetFirstChild(idParent, cookie);
-  } else {
-    id = m_tree->GetNextChild(idParent, cookie);
-  }
-  if (!id.IsOk()) {
-    return;
-  }
-
+void ControlMain::_iterate_tree(const wxTreeItemId & id, bk::Folder *actual_folder) {
   wxString my_text = m_tree->GetItemText(id);
+  wxLogMessage(my_text);
   auto *my_data = dynamic_cast<BKTreeItemData *>(m_tree->GetItemData(id));
   wxASSERT(my_data);
   if (my_data->GetType() == BK_FOLDER) {
-    wxLogMessage(my_text + " - Folder");
-    if (actual_folder == nullptr) {
-      actual_folder = folder_list->add_folders();
-    } else {
-      actual_folder = actual_folder->add_folders();
-    }
     actual_folder->set_name(my_text);
     actual_folder->set_is_group(true);
   } else {
-    if (actual_folder == nullptr) {
-      actual_folder = folder_list->add_folders();
-    } else {
-      actual_folder = actual_folder->add_folders();
-    }
     actual_folder->set_is_group(false);
     actual_folder->set_name(my_text);
     wxVector<BookMark> my_books = my_data->GetBookmarks();
@@ -392,13 +382,21 @@ void ControlMain::_iterate_tree(const wxTreeItemId &idParent, bk::FolderList *fo
       Folder::Bookmark *my_pbk = actual_folder->add_bookmarks();
       iter->SaveToProto(my_pbk);
     }
-    int my_num_books = my_data->GetBookmarks().size();
-    wxLogMessage("%s - %d bookmark(s)", my_text, my_num_books);
   }
+
   if (m_tree->ItemHasChildren(id)) {
-    _iterate_tree(id, folder_list, actual_folder);
+    wxTreeItemId child_id;
+    wxTreeItemIdValue child_cookie = 0;
+    for (int c = 0; c < m_tree->GetChildrenCount(id, false); c++){
+      if (!child_cookie){
+        child_id = m_tree->GetFirstChild(id, child_cookie);
+      } else {
+        child_id = m_tree->GetNextChild(id, child_cookie);
+      }
+      wxASSERT(child_id.IsOk());
+      _iterate_tree(child_id, actual_folder->add_folders());
+    }
   }
-  _iterate_tree(idParent, folder_list, nullptr, cookie);
 }
 
 void ControlMain::OpenFile(const wxString &pathname) {

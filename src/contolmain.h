@@ -72,8 +72,7 @@ public:
     bool _is_item(const wxTreeItemId & id);
     bool _has_item_selected();
     void _display_bookmarks_for_item(const wxTreeItemId& my_sel_id);
-    void _iterate_tree(const wxTreeItemId& idParent, bk::FolderList* folder_list, bk::Folder* actual_folder = nullptr,
-                       wxTreeItemIdValue cookie = 0);
+    void _iterate_tree(const wxTreeItemId& id, bk::Folder* actual_folder);
     void _populate_tree(const wxTreeItemId idParent, const bk::Folder & folder);
 };
 
