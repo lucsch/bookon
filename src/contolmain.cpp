@@ -49,6 +49,9 @@ ControlMain::ControlMain(wxTreeCtrl *tree, wxDataViewListCtrl *list) {
   m_tree->Bind(wxEVT_TREE_END_LABEL_EDIT, &ControlMain::OnEditLabelEnd, this, m_tree->GetId());
   m_tree->Bind(wxEVT_TREE_ITEM_ACTIVATED, &ControlMain::OnDoubleClick, this, m_tree->GetId());
 
+  // connecting list event
+  m_list->Bind(wxEVT_DATAVIEW_ITEM_ACTIVATED, &ControlMain::OnDoubleClickList, this, m_list->GetId());
+
   m_root = m_tree->AddRoot("Root");
   m_tree->SetBackgroundColour(m_list->GetBackgroundColour().GetAsString());
 
@@ -162,6 +165,8 @@ void ControlMain::OnBeginDrop(wxTreeEvent &event) {
   wxTreeItemId origin = m_dragged_item;
   wxTreeItemId destination = event.GetItem();
 
+  wxLogDebug("Dropping");
+
   if (!origin.IsOk()) {
     event.Veto();
     return;
@@ -249,7 +254,7 @@ void ControlMain::_display_bookmarks_for_item(const wxTreeItemId &my_sel_id) {
   if (!my_data) {
     return;
   }
-
+  m_displayed_id = my_sel_id;
   wxVector<BookMark> bookmarks = my_data->GetBookmarks();
   m_list->DeleteAllItems();
   for (wxVector<BookMark>::iterator iter = bookmarks.begin(); iter != bookmarks.end(); ++iter) {
@@ -425,3 +430,21 @@ void ControlMain::_populate_tree(const wxTreeItemId idParent, const Folder &fold
     m_tree->AppendItem(idParent,  folder.name(), -1,-1, ptreedata);
   }
 }
+
+void ControlMain::OnDoubleClickList(wxDataViewEvent &event) {
+  if (!m_displayed_id.IsOk()){
+    wxLogError("Something is wrong with the selected tree's node!");
+    return;
+  }
+
+  BKTreeItemData *my_data = (BKTreeItemData *)m_tree->GetItemData(m_displayed_id);
+  if (!my_data) {
+    return;
+  }
+  int my_index = m_list->GetItemData(event.GetItem());
+  wxVector<BookMark> bookmarks = my_data->GetBookmarks();
+  wxASSERT(my_index >= 0 && my_index < bookmarks.size());
+  wxLogDebug("Selected bookmark is: %s", bookmarks[my_index].m_description);
+}
+
+
