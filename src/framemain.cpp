@@ -206,8 +206,7 @@ void FrameMain::OnOpen(wxCommandEvent &event) {
   if (my_dlg.ShowModal() == wxID_CANCEL){
     return;
   }
-  wxASSERT(m_control);
-  m_control->OpenFile(my_dlg.GetPath());
+  do_open_file(my_dlg.GetPath());
 }
 
 void FrameMain::OnSave(wxCommandEvent &event) {
@@ -221,4 +220,9 @@ void FrameMain::OnSave(wxCommandEvent &event) {
 
 void FrameMain::OnSaveAs(wxCommandEvent &event) {
 
+}
+
+void FrameMain::do_open_file(const wxString &filename) {
+  wxASSERT(m_control);
+  m_control->OpenFile(filename);
 }

@@ -47,6 +47,8 @@ public:
     void OnSave(wxCommandEvent & event);
     void OnSaveAs(wxCommandEvent & event);
 
+    void do_open_file(const wxString & filename);
+
 private:
     void _create_menubar();
     void _create_statusbar();

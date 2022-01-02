@@ -56,20 +56,6 @@ ControlMain::ControlMain(wxTreeCtrl *tree, wxDataViewListCtrl *list) {
   m_list->AppendTextColumn(_("Description"));
   m_list->AppendTextColumn(_("Path"), wxDATAVIEW_CELL_INERT, 400);
   m_list->AppendTextColumn(_("Type"));
-
-  // TODO: Remove this test code
-  wxTreeItemId my_group = AddGroup("Test_group");
-  m_tree->SelectItem(my_group);
-  wxTreeItemId my_item = AddGroupItem("Test_item");
-  m_tree->SelectItem(my_item);
-  wxVector<BookMark> bookmarks;
-  for (int i = 0; i < 3; i++) {
-    BookMark book(wxString::Format("Bookmark-%d", i), wxEmptyString);
-    bookmarks.push_back(book);
-  }
-  BKTreeItemData *my_data = (BKTreeItemData *)m_tree->GetItemData(my_item);
-  wxASSERT(my_data);
-  my_data->SetBookmarks(bookmarks);
 }
 
 wxTreeItemId ControlMain::AddGroup(const wxString &group_name) {
