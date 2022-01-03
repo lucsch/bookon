@@ -20,6 +20,9 @@ class FrameBookmark : public wxDialog {
   virtual bool TransferDataToWindow();
   virtual bool TransferDataFromWindow();
 
+  void OnButtonPastePath (wxCommandEvent & event);
+  void OnButtonPasteText (wxCommandEvent & event);
+
  private:
   void _create_controls();
 

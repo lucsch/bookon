@@ -20,7 +20,7 @@ const wxVector<wxVariant> BookMark::GetBookMarkDataForList() const {
       book_data.push_back(_T("Open"));
       break;
     case BKM_COPY:
-      book_data.push_back(_T("Copy to clipboard"));
+      book_data.push_back(_T("Copy"));
       break;
     case BKM_WEB:
       book_data.push_back(_T("Web"));

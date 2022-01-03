@@ -4,6 +4,9 @@ FrameBookmark::FrameBookmark(wxWindow* parent, wxWindowID id, const wxString& ti
                              const wxSize& size, long style)
     : wxDialog(parent, id, title, pos, size, style) {
   _create_controls();
+
+  Bind(wxEVT_BUTTON, &FrameBookmark::OnButtonPastePath, this, m_btn_paste_path->GetId());
+  Bind(wxEVT_BUTTON, &FrameBookmark::OnButtonPasteText, this, m_btn_paste_text->GetId());
 }
 
 const BookMark& FrameBookmark::GetBookmark() const {
@@ -37,12 +40,37 @@ bool FrameBookmark::TransferDataFromWindow() {
   m_bookmark.m_description = m_description_ctrl->GetValue();
   m_bookmark.m_path = m_path_ctrl->GetValue();
   m_bookmark.m_type = BKM_OPEN;
-  if (m_opt_copy_ctrl->GetValue()){
+  if (m_opt_copy_ctrl->GetValue()) {
     m_bookmark.m_type = BKM_COPY;
-  }else if (m_opt_web_ctrl->GetValue()){
+  } else if (m_opt_web_ctrl->GetValue()) {
     m_bookmark.m_type = BKM_WEB;
   }
   return true;
+}
+
+void FrameBookmark::OnButtonPastePath(wxCommandEvent& event) {
+  if (wxTheClipboard->Open()) {
+    if (wxTheClipboard->IsSupported(wxDF_FILENAME)) {
+      wxFileDataObject data;
+      wxTheClipboard->GetData(data);
+      wxArrayString my_filenames = data.GetFilenames();
+      if (!my_filenames.IsEmpty()){
+        m_path_ctrl->SetValue(my_filenames[0]);
+      }
+    }
+    wxTheClipboard->Close();
+  }
+}
+
+void FrameBookmark::OnButtonPasteText(wxCommandEvent& event) {
+  if (wxTheClipboard->Open()) {
+    if (wxTheClipboard->IsSupported(wxDF_UNICODETEXT)) {
+      wxTextDataObject data;
+      wxTheClipboard->GetData(data);
+      m_path_ctrl->SetValue(data.GetText());
+    }
+    wxTheClipboard->Close();
+  }
 }
 
 void FrameBookmark::_create_controls() {
