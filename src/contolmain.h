@@ -39,7 +39,7 @@ class BKTreeItemData : public wxTreeItemData {
 class ControlMain {
  public:
   ControlMain(wxTreeCtrl* tree, wxDataViewListCtrl* list);
-  wxTreeItemId AddGroup(const wxString& group_name);
+  wxTreeItemId AddGroup(const wxString& group_name, bool is_root_child);
   void RemoveGroup();
 
   wxTreeItemId AddGroupItem(const wxString& string);

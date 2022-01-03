@@ -105,6 +105,7 @@ void FrameMain::_connect_events() {
   Bind(wxEVT_MENU, &FrameMain::OnSaveAs, this, ID_FILE_SAVE_AS);
   Bind(wxEVT_MENU, &FrameMain::OnAbout, this, ID_ABOUT);
   Bind(wxEVT_MENU, &FrameMain::OnGroupNew, this, ID_GROUP_ADD);
+  Bind(wxEVT_MENU, &FrameMain::OnGroupNewInside, this, ID_GROUP_ADD_INSIDE);
   Bind(wxEVT_MENU, &FrameMain::OnGroupRemove, this, ID_GROUP_REMOVE);
   Bind(wxEVT_MENU, &FrameMain::OnGroupEntryNew, this, ID_GROUP_ENTRY_ADD);
   Bind(wxEVT_MENU, &FrameMain::OnGroupEntryRemove, this, ID_GROUP_ENTRY_REMOVE);
@@ -138,6 +139,7 @@ void FrameMain::_create_menubar() {
   // GROUP
   wxMenu *groupMenu = new wxMenu;
   groupMenu->Append(ID_GROUP_ADD, _("New group") + _T("\t") + _T("Ctrl+G"));
+  groupMenu->Append(ID_GROUP_ADD_INSIDE, _("New group inside") + _T("\t") + _T("Ctrl+Alt+G"));
   groupMenu->Append(ID_GROUP_REMOVE, _("Remove group"));
   groupMenu->AppendSeparator();
   groupMenu->Append(ID_GROUP_ENTRY_ADD, _("New entry") + _T("\t") + _T("Ctrl+E"));
@@ -169,8 +171,13 @@ void FrameMain::OnAbout(wxCommandEvent &WXUNUSED(event)) {
 }
 
 void FrameMain::OnGroupNew(wxCommandEvent &event) {
-  m_control->AddGroup("New Folder");
+  m_control->AddGroup("New Folder", true);
 }
+
+void FrameMain::OnGroupNewInside(wxCommandEvent &event) {
+  m_control->AddGroup("New folder", false);
+}
+
 
 void FrameMain::OnGroupRemove(wxCommandEvent &event) {
   m_control->RemoveGroup();
@@ -185,15 +192,15 @@ void FrameMain::OnGroupEntryRemove(wxCommandEvent &event) {
 }
 
 void FrameMain::OnBookmarkAdd(wxCommandEvent &event) {
-    m_control->BookMarkAdd();
+  m_control->BookMarkAdd();
 }
 
 void FrameMain::OnBookmarkEdit(wxCommandEvent &event) {
-    m_control->BookMarkEdit();
+  m_control->BookMarkEdit();
 }
 
 void FrameMain::OnBookmarkRemove(wxCommandEvent &event) {
-    m_control->BookMarkDel();
+  m_control->BookMarkDel();
 }
 
 void FrameMain::OnNew(wxCommandEvent &event) {
@@ -225,7 +232,6 @@ void FrameMain::OnSave(wxCommandEvent &event) {
 void FrameMain::OnSaveAs(wxCommandEvent &event) {
 
 }
-
 void FrameMain::do_open_file(const wxString &filename) {
   wxASSERT(m_control);
   m_control->OpenFile(filename);

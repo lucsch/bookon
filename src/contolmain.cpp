@@ -72,11 +72,16 @@ void ControlMain::_connect_event() {  // connecting tree events
   m_list->Bind(wxEVT_MENU, &ControlMain::OnMenuWeb, this, m_menui_ctxt_web->GetId());
 }
 
-wxTreeItemId ControlMain::AddGroup(const wxString &group_name) {
+wxTreeItemId ControlMain::AddGroup(const wxString &group_name, bool is_root_child) {
   wxASSERT(m_tree);
+
+  // add a child to the root node
+  if (is_root_child){
+    return m_tree->AppendItem(m_root, group_name, -1, -1, new BKTreeItemData(BK_FOLDER));
+  }
+
   wxTreeItemId my_selected_item = m_tree->GetSelection();
   wxTreeItemId my_parent = m_root;
-
   // if an entry is selected :
   //  - add a child if the entry is a folder
   //  - add a sibling otherwise
