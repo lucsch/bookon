@@ -67,9 +67,9 @@ void ControlMain::_connect_event() {  // connecting tree events
 
   // connecting contextual menu
   m_list->Bind(wxEVT_MENU, &ControlMain::OnMenuEdit, this, m_menui_ctxt_edit->GetId());
-  //  m_list->Bind(wxEVT_MENU, &ControlMain::OnMenuCopy, this, m_menui_ctxt_copy->GetId());
-  //  m_list->Bind(wxEVT_MENU, &ControlMain::OnMenuOpen, this, m_menui_ctxt_open->GetId());
-  //  m_list->Bind(wxEVT_MENU, &ControlMain::OnMenuWeb, this, m_menui_ctxt_web->GetId());
+  m_list->Bind(wxEVT_MENU, &ControlMain::OnMenuCopy, this, m_menui_ctxt_copy->GetId());
+  m_list->Bind(wxEVT_MENU, &ControlMain::OnMenuOpen, this, m_menui_ctxt_open->GetId());
+  m_list->Bind(wxEVT_MENU, &ControlMain::OnMenuWeb, this, m_menui_ctxt_web->GetId());
 }
 
 wxTreeItemId ControlMain::AddGroup(const wxString &group_name) {
@@ -478,7 +478,51 @@ void ControlMain::_create_contextual_menu() {
 void ControlMain::OnMenuEdit(wxCommandEvent &event) {
   BookMarkEdit();
 }
-//
-//void ControlMain::OnMenuOpen(wxDataViewEvent &event) {}
-//void ControlMain::OnMenuCopy(wxDataViewEvent &event) {}
-//void ControlMain::OnMenuWeb(wxDataViewEvent &event) {}
+
+void ControlMain::OnMenuOpen(wxCommandEvent &event) {
+  BookMark my_book;
+  if(!_get_list_selected_bookmark(my_book)){
+    return;
+  }
+  my_book.m_type = BKM_OPEN;
+  my_book.DoAction();
+}
+
+void ControlMain::OnMenuCopy(wxCommandEvent &event) {
+  BookMark my_book;
+  if(!_get_list_selected_bookmark(my_book)){
+    return;
+  }
+  my_book.m_type = BKM_COPY;
+  my_book.DoAction();
+}
+
+void ControlMain::OnMenuWeb(wxCommandEvent &event) {
+  BookMark my_book;
+  if(!_get_list_selected_bookmark(my_book)){
+    return;
+  }
+  my_book.m_type = BKM_WEB;
+  my_book.DoAction();
+}
+
+bool ControlMain::_get_list_selected_bookmark(BookMark &bookmark) {
+  wxASSERT(m_list);
+  wxDataViewItem my_selected_item = m_list->GetSelection();
+  if (!my_selected_item.IsOk()){
+    return false;
+  }
+
+  if (!m_displayed_id.IsOk()){
+    return false;
+  }
+
+  auto * my_data = dynamic_cast<BKTreeItemData*>(m_tree->GetItemData(m_displayed_id));
+  if (my_data == nullptr){
+    return false;
+  }
+
+  BookMark my_book = my_data->GetBookmarks()[m_list->ItemToRow(my_selected_item)];
+  bookmark = my_book;
+  return true;
+}

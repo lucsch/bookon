@@ -60,9 +60,9 @@ class ControlMain {
   void OnDoubleClickList (wxDataViewEvent & event);
   void OnRightClickMenu (wxDataViewEvent & event);
   void OnMenuEdit (wxCommandEvent & event);
-//    void OnMenuOpen (wxDataViewEvent & event);
-//    void OnMenuCopy (wxDataViewEvent & event);
-//    void OnMenuWeb (wxDataViewEvent & event);
+  void OnMenuOpen (wxCommandEvent & event);
+  void OnMenuCopy (wxCommandEvent & event);
+  void OnMenuWeb (wxCommandEvent & event);
 
 
   BKTreeItemData * GetItemData (const wxTreeItemId& id);
@@ -83,8 +83,9 @@ class ControlMain {
   bool _has_item_selected();
   void _display_bookmarks_for_item(const wxTreeItemId& my_sel_id);
   void _iterate_tree(const wxTreeItemId& id, bk::Folder* actual_folder);
-
   void _populate_tree(const wxTreeItemId idParent, const bk::Folder & folder);
+
+  bool _get_list_selected_bookmark(BookMark& bookmark);
 
   void _create_contextual_menu();
   wxMenu m_contextual_menu;
