@@ -4,9 +4,9 @@
 #include <fstream>
 #include <iostream>
 
+#include "bookdnd.h"
 #include "bookmark.pb.h"
 #include "framebookmark.h"
-#include "bookdnd.h"
 using namespace bk;
 
 BKTreeItemData::BKTreeItemData(BKTreeItemDataType type) {
@@ -47,8 +47,8 @@ ControlMain::ControlMain(wxTreeCtrl *tree, wxDataViewListCtrl *list) {
   _create_contextual_menu();
   _connect_event();
 
-  //m_tree->SetDropTarget(new BKDNDDropTargetText(this));
-  m_tree->SetDropTarget( new BKDNDDropTarget(this));
+  // m_tree->SetDropTarget(new BKDNDDropTargetText(this));
+  m_tree->SetDropTarget(new BKDNDDropTarget(this));
 
   m_root = m_tree->AddRoot("Root");
   m_tree->SetBackgroundColour(m_list->GetBackgroundColour().GetAsString());
@@ -490,8 +490,8 @@ void ControlMain::OnMenuEdit(wxCommandEvent &event) {
 }
 
 void ControlMain::OnMenuOpen(wxCommandEvent &event) {
-  BookMark * my_book = _get_list_selected_bookmark();
-  if (my_book == nullptr){
+  BookMark *my_book = _get_list_selected_bookmark();
+  if (my_book == nullptr) {
     return;
   }
   BookMark bk_copy = *my_book;
@@ -500,8 +500,8 @@ void ControlMain::OnMenuOpen(wxCommandEvent &event) {
 }
 
 void ControlMain::OnMenuCopy(wxCommandEvent &event) {
-  BookMark * my_book = _get_list_selected_bookmark();
-  if (my_book == nullptr){
+  BookMark *my_book = _get_list_selected_bookmark();
+  if (my_book == nullptr) {
     return;
   }
   BookMark bk_copy = *my_book;
@@ -510,8 +510,8 @@ void ControlMain::OnMenuCopy(wxCommandEvent &event) {
 }
 
 void ControlMain::OnMenuWeb(wxCommandEvent &event) {
-  BookMark * my_book = _get_list_selected_bookmark();
-  if (my_book == nullptr){
+  BookMark *my_book = _get_list_selected_bookmark();
+  if (my_book == nullptr) {
     return;
   }
   BookMark bk_copy = *my_book;
@@ -519,7 +519,7 @@ void ControlMain::OnMenuWeb(wxCommandEvent &event) {
   bk_copy.DoAction();
 }
 
-BookMark * ControlMain::_get_list_selected_bookmark() {
+BookMark *ControlMain::_get_list_selected_bookmark() {
   wxASSERT(m_list);
   wxDataViewItem my_selected_item = m_list->GetSelection();
   if (!my_selected_item.IsOk()) {
@@ -539,12 +539,17 @@ BookMark * ControlMain::_get_list_selected_bookmark() {
 }
 
 void ControlMain::OnDragBookMarkStart(wxDataViewEvent &event) {
-  wxLogDebug("starting dragging");
+  int my_book_index = m_list->GetSelectedRow();
+  wxLogDebug("starting dragging : %d", my_book_index);
 
-  BKDNDDataObject my_data(_get_list_selected_bookmark(), m_displayed_id);
-  wxDropSource drag_source (m_list);
+  wxCustomDataObject my_data;
+  my_data.SetFormat(wxDataFormat(BKDNDFormatId()));
+  my_data.SetData(sizeof(int), &my_book_index);
+
+  // BKDNDDataObject my_data( my_book_index);
+  wxDropSource drag_source(m_list);
   drag_source.SetData(my_data);
-  wxDragResult result = drag_source.DoDragDrop( true );
+  wxDragResult result = drag_source.DoDragDrop(true);
   switch (result) {
     case wxDragCopy:
       wxLogDebug("Data copied!");
@@ -559,6 +564,6 @@ void ControlMain::OnDragBookMarkStart(wxDataViewEvent &event) {
   event.Veto();
 }
 
-void ControlMain::DropData(wxCoord x, wxCoord y, const wxString &text) {
-  wxLogDebug("Text dropped: %s", text);
+void ControlMain::DropData(wxCoord x, wxCoord y, const int bookmark_index) {
+  wxLogDebug("Bookmark dropped: %d", bookmark_index);
 }

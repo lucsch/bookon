@@ -71,7 +71,7 @@ class ControlMain {
   bool SaveFile(const wxString& pathname);
   void OpenFile(const wxString& pathname);
 
-  void DropData(wxCoord x, wxCoord y, const wxString& text);
+  void DropData(wxCoord x, wxCoord y, const int bookmark_index);
 
  private:
   wxTreeCtrl* m_tree;
