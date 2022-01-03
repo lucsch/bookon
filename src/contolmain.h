@@ -27,6 +27,7 @@ class BKTreeItemData : public wxTreeItemData {
   BKTreeItemDataType GetType() const;
   void SetBookmarks(const wxVector<BookMark>& mBookmarks);
   wxVector<BookMark>& GetBookmarks();
+  bool RemoveBookMarkAtIndex (int index, BookMark * removed_bookmark = nullptr);
 
  private:
   BKTreeItemDataType m_type;
@@ -72,6 +73,7 @@ class ControlMain {
   void OpenFile(const wxString& pathname);
 
   void DropData(wxCoord x, wxCoord y, const int bookmark_index);
+  bool IsDropPossible (wxCoord x, wxCoord y);
 
  private:
   wxTreeCtrl* m_tree;

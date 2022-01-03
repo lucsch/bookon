@@ -28,9 +28,9 @@ class BKDNDDropTarget : public wxDropTarget {
  public:
   BKDNDDropTarget(ControlMain* control);
   virtual wxDragResult OnData(wxCoord x, wxCoord y, wxDragResult def);
+  virtual bool OnDrop(wxCoord x, wxCoord y);
 
- private:
-  ControlMain* m_control;
+      private : ControlMain* m_control;
 };
 
 #endif  // BOOKON_BOOKDND_H

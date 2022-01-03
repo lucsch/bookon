@@ -22,3 +22,7 @@ wxDragResult BKDNDDropTarget::OnData(wxCoord x, wxCoord y, wxDragResult def) {
   m_control->DropData(x, y, *my_int);
   return def;
 }
+
+bool BKDNDDropTarget::OnDrop(wxCoord x, wxCoord y) {
+  return m_control->IsDropPossible(x, y);
+}

@@ -36,6 +36,21 @@ void BKTreeItemData::SetBookmarks(const wxVector<BookMark> &mBookmarks) {
   m_bookmarks = mBookmarks;
 }
 
+bool BKTreeItemData::RemoveBookMarkAtIndex(int index, BookMark *removed_bookmark) {
+  if (index >= m_bookmarks.size()){
+    wxLogError("Index :%d is out of bound!", index);
+    return false;
+  }
+
+  if (removed_bookmark != nullptr){
+    *removed_bookmark = m_bookmarks[index];
+  }
+
+  wxVector<BookMark>::iterator  iter = m_bookmarks.begin();
+  m_bookmarks.erase(iter + index);
+  return true;
+}
+
 BKTreeItemData *ControlMain::GetItemData(const wxTreeItemId &id) {
   return (BKTreeItemData *)m_tree->GetItemData(id);
 }
@@ -267,7 +282,6 @@ void ControlMain::OnDoubleClick(wxTreeEvent &event) {
     event.Veto();
     return;
   }
-  wxLogDebug("Double-click");
   _display_bookmarks_for_item(my_sel_id);
 }
 
@@ -540,8 +554,6 @@ BookMark *ControlMain::_get_list_selected_bookmark() {
 
 void ControlMain::OnDragBookMarkStart(wxDataViewEvent &event) {
   int my_book_index = m_list->GetSelectedRow();
-  wxLogDebug("starting dragging : %d", my_book_index);
-
   wxCustomDataObject my_data;
   my_data.SetFormat(wxDataFormat(BKDNDFormatId()));
   my_data.SetData(sizeof(int), &my_book_index);
@@ -566,4 +578,44 @@ void ControlMain::OnDragBookMarkStart(wxDataViewEvent &event) {
 
 void ControlMain::DropData(wxCoord x, wxCoord y, const int bookmark_index) {
   wxLogDebug("Bookmark dropped: %d", bookmark_index);
+  wxTreeItemId my_hitted_id = m_tree->HitTest(wxPoint(x, y));
+  if (!_is_item(my_hitted_id) || my_hitted_id == m_displayed_id){
+    return;
+  }
+
+  if (bookmark_index == wxNOT_FOUND){
+    wxLogDebug("Bookmark index = -1");
+    return;
+  }
+
+  // move the item from one tree data to the other
+  auto my_origin_data = dynamic_cast<BKTreeItemData*>(m_tree->GetItemData(m_displayed_id));
+  BookMark my_moved_book;
+  if (!my_origin_data->RemoveBookMarkAtIndex(bookmark_index, &my_moved_book)){
+    return;
+  }
+
+  auto my_dest_data = dynamic_cast<BKTreeItemData*>(m_tree->GetItemData(my_hitted_id));
+  my_dest_data->GetBookmarks().push_back(my_moved_book);
+
+  _display_bookmarks_for_item(m_displayed_id);
+}
+
+bool ControlMain::IsDropPossible(wxCoord x, wxCoord y) {
+  wxTreeItemId my_hitted_id = m_tree->HitTest(wxPoint(x, y));
+  // dropping is not on an item!
+  if (!my_hitted_id.IsOk()){
+    return false;
+  }
+
+  // dropping on the displayed item... nothing move
+  if (my_hitted_id == m_displayed_id){
+    return false;
+  }
+
+  // dropping on a folder ... not possible
+  if (_is_folder(my_hitted_id)){
+    return false;
+  }
+  return true;
 }
