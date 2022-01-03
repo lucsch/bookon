@@ -22,8 +22,8 @@ FrameMain::FrameMain(const wxString &title) : wxFrame(NULL, wxID_ANY, title, wxD
   _create_statusbar();
   _connect_events();
 
-  // m_tree_ctrl->EnableSystemTheme(false);
   m_control = new ControlMain(m_tree_ctrl, m_list_ctrl);
+  // m_tree_ctrl->EnableSystemTheme(false);
 }
 
 void FrameMain::_create_controls() {

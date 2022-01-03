@@ -42,7 +42,19 @@ ControlMain::ControlMain(wxTreeCtrl *tree, wxDataViewListCtrl *list) {
   m_tree = tree;
   m_list = list;
 
-  // connecting tree events
+  _create_contextual_menu();
+  _connect_event();
+
+  m_root = m_tree->AddRoot("Root");
+  m_tree->SetBackgroundColour(m_list->GetBackgroundColour().GetAsString());
+
+  // init list columns
+  m_list->AppendTextColumn(_("Description"));
+  m_list->AppendTextColumn(_("Path"), wxDATAVIEW_CELL_INERT, 400);
+  m_list->AppendTextColumn(_("Type"));
+}
+
+void ControlMain::_connect_event() {  // connecting tree events
   m_tree->Bind(wxEVT_TREE_BEGIN_DRAG, &ControlMain::OnBeginDrag, this, m_tree->GetId());
   m_tree->Bind(wxEVT_TREE_END_DRAG, &ControlMain::OnBeginDrop, this, m_tree->GetId());
   m_tree->Bind(wxEVT_TREE_BEGIN_LABEL_EDIT, &ControlMain::OnEditLabelBegin, this, m_tree->GetId());
@@ -53,13 +65,11 @@ ControlMain::ControlMain(wxTreeCtrl *tree, wxDataViewListCtrl *list) {
   m_list->Bind(wxEVT_DATAVIEW_ITEM_ACTIVATED, &ControlMain::OnDoubleClickList, this, m_list->GetId());
   m_list->Bind(wxEVT_DATAVIEW_ITEM_CONTEXT_MENU, &ControlMain::OnRightClickMenu, this, m_list->GetId());
 
-  m_root = m_tree->AddRoot("Root");
-  m_tree->SetBackgroundColour(m_list->GetBackgroundColour().GetAsString());
-
-  // init list columns
-  m_list->AppendTextColumn(_("Description"));
-  m_list->AppendTextColumn(_("Path"), wxDATAVIEW_CELL_INERT, 400);
-  m_list->AppendTextColumn(_("Type"));
+  // connecting contextual menu
+  m_list->Bind(wxEVT_MENU, &ControlMain::OnMenuEdit, this, m_menui_ctxt_edit->GetId());
+  //  m_list->Bind(wxEVT_MENU, &ControlMain::OnMenuCopy, this, m_menui_ctxt_copy->GetId());
+  //  m_list->Bind(wxEVT_MENU, &ControlMain::OnMenuOpen, this, m_menui_ctxt_open->GetId());
+  //  m_list->Bind(wxEVT_MENU, &ControlMain::OnMenuWeb, this, m_menui_ctxt_web->GetId());
 }
 
 wxTreeItemId ControlMain::AddGroup(const wxString &group_name) {
@@ -454,7 +464,21 @@ void ControlMain::OnRightClickMenu(wxDataViewEvent &event) {
     event.Veto();
     return;
   }
-
-  
-
+  m_list->PopupMenu(&m_contextual_menu, event.GetPosition());
 }
+
+void ControlMain::_create_contextual_menu() {
+  m_menui_ctxt_edit = m_contextual_menu.Append(wxID_ANY, _("Edit..."));
+  m_contextual_menu.AppendSeparator();
+  m_menui_ctxt_open = m_contextual_menu.Append(wxID_ANY, _("Open"));
+  m_menui_ctxt_web = m_contextual_menu.Append(wxID_ANY, _("Web"));
+  m_menui_ctxt_copy = m_contextual_menu.Append(wxID_ANY, _("Copy"));
+}
+
+void ControlMain::OnMenuEdit(wxCommandEvent &event) {
+  BookMarkEdit();
+}
+//
+//void ControlMain::OnMenuOpen(wxDataViewEvent &event) {}
+//void ControlMain::OnMenuCopy(wxDataViewEvent &event) {}
+//void ControlMain::OnMenuWeb(wxDataViewEvent &event) {}
