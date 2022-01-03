@@ -6,14 +6,15 @@
 #ifndef WX_PRECOMP
 #include "wx/wx.h"
 #endif
+#include <wx/filename.h>
 #include <wx/splitter.h>
 #include <wx/srchctrl.h>
-#include <wx/filename.h>
-
 #include <wx/systhemectrl.h>
+
 #include "contolmain.h"
 
-enum { ID_QUIT = wxID_EXIT,
+enum {
+  ID_QUIT = wxID_EXIT,
   ID_ABOUT = wxID_ABOUT,
   ID_GROUP_ADD,
   ID_GROUP_ADD_INSIDE,
@@ -26,7 +27,8 @@ enum { ID_QUIT = wxID_EXIT,
   ID_FILE_NEW = wxID_NEW,
   ID_FILE_OPEN = wxID_OPEN,
   ID_FILE_SAVE = wxID_SAVE,
-  ID_FILE_SAVE_AS = wxID_SAVEAS};
+  ID_FILE_SAVE_AS = wxID_SAVEAS
+};
 
 class FrameMain : public wxFrame {
  public:
@@ -37,19 +39,19 @@ class FrameMain : public wxFrame {
   void OnGroupNew(wxCommandEvent& event);
   void OnGroupNewInside(wxCommandEvent& event);
   void OnGroupRemove(wxCommandEvent& event);
-  void OnGroupEntryNew(wxCommandEvent & event);
-  void OnGroupEntryRemove(wxCommandEvent & event);
+  void OnGroupEntryNew(wxCommandEvent& event);
+  void OnGroupEntryRemove(wxCommandEvent& event);
 
-  void OnBookmarkAdd(wxCommandEvent & event);
-  void OnBookmarkEdit(wxCommandEvent & event);
-  void OnBookmarkRemove(wxCommandEvent & event);
+  void OnBookmarkAdd(wxCommandEvent& event);
+  void OnBookmarkEdit(wxCommandEvent& event);
+  void OnBookmarkRemove(wxCommandEvent& event);
 
-  void OnNew(wxCommandEvent & event);
-  void OnOpen(wxCommandEvent & event);
-  void OnSave(wxCommandEvent & event);
-  void OnSaveAs(wxCommandEvent & event);
+  void OnNew(wxCommandEvent& event);
+  void OnOpen(wxCommandEvent& event);
+  void OnSave(wxCommandEvent& event);
+  void OnSaveAs(wxCommandEvent& event);
 
-  void do_open_file(const wxString & filename);
+  void do_open_file(const wxString& filename);
 
  private:
   void _create_menubar();

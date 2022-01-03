@@ -1,10 +1,11 @@
 
 #include "contolmain.h"
 
-#include "bookmark.pb.h"
-#include "framebookmark.h"
 #include <fstream>
 #include <iostream>
+
+#include "bookmark.pb.h"
+#include "framebookmark.h"
 using namespace bk;
 
 BKTreeItemData::BKTreeItemData(BKTreeItemDataType type) {
@@ -76,7 +77,7 @@ wxTreeItemId ControlMain::AddGroup(const wxString &group_name, bool is_root_chil
   wxASSERT(m_tree);
 
   // add a child to the root node
-  if (is_root_child){
+  if (is_root_child) {
     return m_tree->AppendItem(m_root, group_name, -1, -1, new BKTreeItemData(BK_FOLDER));
   }
 
@@ -358,8 +359,8 @@ bool ControlMain::SaveFile(const wxString &pathname) {
   wxASSERT(root.IsOk());
   wxTreeItemId id;
   wxTreeItemIdValue cookie = 0;
-  for (int i = 0; i< m_tree->GetChildrenCount(root, false); i++){
-    if (!cookie){
+  for (int i = 0; i < m_tree->GetChildrenCount(root, false); i++) {
+    if (!cookie) {
       id = m_tree->GetFirstChild(root, cookie);
     } else {
       id = m_tree->GetNextChild(root, cookie);
@@ -373,7 +374,7 @@ bool ControlMain::SaveFile(const wxString &pathname) {
   return true;
 }
 
-void ControlMain::_iterate_tree(const wxTreeItemId & id, bk::Folder *actual_folder) {
+void ControlMain::_iterate_tree(const wxTreeItemId &id, bk::Folder *actual_folder) {
   wxString my_text = m_tree->GetItemText(id);
   wxLogMessage(my_text);
   auto *my_data = dynamic_cast<BKTreeItemData *>(m_tree->GetItemData(id));
@@ -394,8 +395,8 @@ void ControlMain::_iterate_tree(const wxTreeItemId & id, bk::Folder *actual_fold
   if (m_tree->ItemHasChildren(id)) {
     wxTreeItemId child_id;
     wxTreeItemIdValue child_cookie = 0;
-    for (int c = 0; c < m_tree->GetChildrenCount(id, false); c++){
-      if (!child_cookie){
+    for (int c = 0; c < m_tree->GetChildrenCount(id, false); c++) {
+      if (!child_cookie) {
         child_id = m_tree->GetFirstChild(id, child_cookie);
       } else {
         child_id = m_tree->GetNextChild(id, child_cookie);
@@ -410,15 +411,15 @@ void ControlMain::OpenFile(const wxString &pathname) {
   // read the data
   FolderList my_list;
   std::fstream input(pathname.ToStdString(), std::ios::in | std::ios::binary);
-  if(!my_list.ParseFromIstream(&input)){
-   wxLogError("Error reading: '%s'", pathname);
-   return;
+  if (!my_list.ParseFromIstream(&input)) {
+    wxLogError("Error reading: '%s'", pathname);
+    return;
   }
 
   // iterate the data and populate the treectrl
   m_tree->DeleteAllItems();
   wxTreeItemId rootid = m_tree->AddRoot("Root");
-  for (int i = 0; i< my_list.folders_size(); i++) {
+  for (int i = 0; i < my_list.folders_size(); i++) {
     Folder my_folder = my_list.folders(i);
     _populate_tree(rootid, my_folder);
   }
@@ -427,28 +428,27 @@ void ControlMain::OpenFile(const wxString &pathname) {
 }
 
 void ControlMain::_populate_tree(const wxTreeItemId idParent, const Folder &folder) {
-  if (folder.is_group()){
+  if (folder.is_group()) {
     wxTreeItemId id = m_tree->AppendItem(idParent, folder.name(), -1, -1, new BKTreeItemData(BK_FOLDER));
     // re-entring method for adding folders
-    for (int f = 0; f<folder.folders_size(); f++){
+    for (int f = 0; f < folder.folders_size(); f++) {
       _populate_tree(id, folder.folders(f));
     }
-  }
-  else {
+  } else {
     wxVector<BookMark> my_bookmarks;
-    for (int b = 0; b < folder.bookmarks_size(); b++){
+    for (int b = 0; b < folder.bookmarks_size(); b++) {
       BookMark my_book;
       my_book.LoadFromProto(folder.bookmarks(b));
       my_bookmarks.push_back(my_book);
     }
-    BKTreeItemData * ptreedata = new BKTreeItemData(BK_ITEM);
+    BKTreeItemData *ptreedata = new BKTreeItemData(BK_ITEM);
     ptreedata->SetBookmarks(my_bookmarks);
-    m_tree->AppendItem(idParent,  folder.name(), -1,-1, ptreedata);
+    m_tree->AppendItem(idParent, folder.name(), -1, -1, ptreedata);
   }
 }
 
 void ControlMain::OnDoubleClickList(wxDataViewEvent &event) {
-  if (!m_displayed_id.IsOk()){
+  if (!m_displayed_id.IsOk()) {
     wxLogError("Something is wrong with the selected tree's node!");
     return;
   }
@@ -465,7 +465,7 @@ void ControlMain::OnDoubleClickList(wxDataViewEvent &event) {
 }
 
 void ControlMain::OnRightClickMenu(wxDataViewEvent &event) {
-  if (!event.GetItem().IsOk()){
+  if (!event.GetItem().IsOk()) {
     event.Veto();
     return;
   }
@@ -486,7 +486,7 @@ void ControlMain::OnMenuEdit(wxCommandEvent &event) {
 
 void ControlMain::OnMenuOpen(wxCommandEvent &event) {
   BookMark my_book;
-  if(!_get_list_selected_bookmark(my_book)){
+  if (!_get_list_selected_bookmark(my_book)) {
     return;
   }
   my_book.m_type = BKM_OPEN;
@@ -495,7 +495,7 @@ void ControlMain::OnMenuOpen(wxCommandEvent &event) {
 
 void ControlMain::OnMenuCopy(wxCommandEvent &event) {
   BookMark my_book;
-  if(!_get_list_selected_bookmark(my_book)){
+  if (!_get_list_selected_bookmark(my_book)) {
     return;
   }
   my_book.m_type = BKM_COPY;
@@ -504,7 +504,7 @@ void ControlMain::OnMenuCopy(wxCommandEvent &event) {
 
 void ControlMain::OnMenuWeb(wxCommandEvent &event) {
   BookMark my_book;
-  if(!_get_list_selected_bookmark(my_book)){
+  if (!_get_list_selected_bookmark(my_book)) {
     return;
   }
   my_book.m_type = BKM_WEB;
@@ -514,16 +514,16 @@ void ControlMain::OnMenuWeb(wxCommandEvent &event) {
 bool ControlMain::_get_list_selected_bookmark(BookMark &bookmark) {
   wxASSERT(m_list);
   wxDataViewItem my_selected_item = m_list->GetSelection();
-  if (!my_selected_item.IsOk()){
+  if (!my_selected_item.IsOk()) {
     return false;
   }
 
-  if (!m_displayed_id.IsOk()){
+  if (!m_displayed_id.IsOk()) {
     return false;
   }
 
-  auto * my_data = dynamic_cast<BKTreeItemData*>(m_tree->GetItemData(m_displayed_id));
-  if (my_data == nullptr){
+  auto *my_data = dynamic_cast<BKTreeItemData *>(m_tree->GetItemData(m_displayed_id));
+  if (my_data == nullptr) {
     return false;
   }
 

@@ -6,8 +6,9 @@
 #include "bookmark.h"
 #include "wx/wx.h"
 #endif
-#include "bookmark.pb.h"
 #include <wx/clipbrd.h>
+
+#include "bookmark.pb.h"
 using namespace bk;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -28,11 +29,10 @@ class BookMark {
   const wxVector<wxVariant> GetBookMarkDataForList() const;
 
   // save and load protobuf data
-  void SaveToProto(bk::Folder::Bookmark * pbk);
-  void LoadFromProto (const bk::Folder::Bookmark & proto_book);
+  void SaveToProto(bk::Folder::Bookmark* pbk);
+  void LoadFromProto(const bk::Folder::Bookmark& proto_book);
 
   // action
   void DoAction();
-
 };
-#endif // BOOKON_BOOKMARK_H
+#endif  // BOOKON_BOOKMARK_H

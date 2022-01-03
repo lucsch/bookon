@@ -10,7 +10,7 @@ bool MainApp::OnInit() {
   }
 
   FrameMain *frame = new FrameMain("Bookon");
-  if (m_open_file != wxEmptyString){
+  if (m_open_file != wxEmptyString) {
     frame->do_open_file(m_open_file);
   }
   frame->Show(true);
@@ -24,10 +24,10 @@ void MainApp::OnInitCmdLine(wxCmdLineParser &parser) {
 
 bool MainApp::OnCmdLineParsed(wxCmdLineParser &parser) {
   m_open_file = wxEmptyString;
-  if (parser.GetParamCount() > 0){
+  if (parser.GetParamCount() > 0) {
     m_open_file = parser.GetParam(0);
 
-    if (!wxFileExists(m_open_file)){
+    if (!wxFileExists(m_open_file)) {
       wxLogError(_("Unable to open: '%s'"), m_open_file);
       m_open_file = wxEmptyString;
     }

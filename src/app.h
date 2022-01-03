@@ -9,7 +9,7 @@
 #include <wx/cmdline.h>
 
 class MainApp : public wxApp {
-public:
+ public:
   virtual bool OnInit();
 
   virtual void OnInitCmdLine(wxCmdLineParser& parser);

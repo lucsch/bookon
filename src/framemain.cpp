@@ -49,8 +49,9 @@ void FrameMain::_create_controls() {
   wxBoxSizer *bSizer6;
   bSizer6 = new wxBoxSizer(wxVERTICAL);
 
-  m_tree_ctrl = new wxTreeCtrl(m_panel2, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                               wxTR_DEFAULT_STYLE | wxTR_NO_LINES | wxTR_HIDE_ROOT | wxTR_TWIST_BUTTONS | wxTR_EDIT_LABELS);
+  m_tree_ctrl =
+      new wxTreeCtrl(m_panel2, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                     wxTR_DEFAULT_STYLE | wxTR_NO_LINES | wxTR_HIDE_ROOT | wxTR_TWIST_BUTTONS | wxTR_EDIT_LABELS);
   bSizer6->Add(m_tree_ctrl, 1, wxEXPAND, 5);
 
   m_panel2->SetSizer(bSizer6);
@@ -147,7 +148,7 @@ void FrameMain::_create_menubar() {
   menuBar->Append(groupMenu, _("&Group"));
 
   // BOOKMARK
-  wxMenu * bookmarkMenu = new wxMenu;
+  wxMenu *bookmarkMenu = new wxMenu;
   bookmarkMenu->Append(ID_BOOK_ADD, _("Add bookmark") + _T("\t") + _T("Ctrl+B"));
   bookmarkMenu->Append(ID_BOOK_EDIT, _("Edit bookmark"));
   bookmarkMenu->Append(ID_BOOK_REMOVE, _("Remove bookmark"));
@@ -177,7 +178,6 @@ void FrameMain::OnGroupNew(wxCommandEvent &event) {
 void FrameMain::OnGroupNewInside(wxCommandEvent &event) {
   m_control->AddGroup("New folder", false);
 }
-
 
 void FrameMain::OnGroupRemove(wxCommandEvent &event) {
   m_control->RemoveGroup();
@@ -213,25 +213,23 @@ void FrameMain::_update_title() {
 }
 
 void FrameMain::OnOpen(wxCommandEvent &event) {
-  wxFileDialog my_dlg (this, _("Open file"), "", "", "bkdoc files (*.bkdoc)|*.bkdoc", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
-  if (my_dlg.ShowModal() == wxID_CANCEL){
+  wxFileDialog my_dlg(this, _("Open file"), "", "", "bkdoc files (*.bkdoc)|*.bkdoc", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+  if (my_dlg.ShowModal() == wxID_CANCEL) {
     return;
   }
   do_open_file(my_dlg.GetPath());
 }
 
 void FrameMain::OnSave(wxCommandEvent &event) {
-  wxFileDialog my_dlg (this, _("Save file"), "", "", "bkdoc files (*.bkdoc)|*.bkdoc", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-  if (my_dlg.ShowModal() == wxID_CANCEL){
+  wxFileDialog my_dlg(this, _("Save file"), "", "", "bkdoc files (*.bkdoc)|*.bkdoc", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+  if (my_dlg.ShowModal() == wxID_CANCEL) {
     return;
   }
   wxASSERT(m_control);
   m_control->SaveFile(my_dlg.GetPath());
 }
 
-void FrameMain::OnSaveAs(wxCommandEvent &event) {
-
-}
+void FrameMain::OnSaveAs(wxCommandEvent &event) {}
 void FrameMain::do_open_file(const wxString &filename) {
   wxASSERT(m_control);
   m_control->OpenFile(filename);

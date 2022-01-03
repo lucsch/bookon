@@ -32,7 +32,7 @@ const wxVector<wxVariant> BookMark::GetBookMarkDataForList() const {
   return book_data;
 }
 
-void BookMark::SaveToProto(bk::Folder::Bookmark * pbk) {
+void BookMark::SaveToProto(bk::Folder::Bookmark *pbk) {
   pbk->set_description(m_description);
   pbk->set_command(m_path);
   switch (m_type) {
@@ -65,7 +65,7 @@ void BookMark::LoadFromProto(const Folder::Bookmark &proto_book) {
 }
 
 void BookMark::DoAction() {
-  if (m_path.IsEmpty()){
+  if (m_path.IsEmpty()) {
     wxLogError("No action defined for this bookmark!");
     return;
   }

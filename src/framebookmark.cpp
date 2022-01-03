@@ -54,7 +54,7 @@ void FrameBookmark::OnButtonPastePath(wxCommandEvent& event) {
       wxFileDataObject data;
       wxTheClipboard->GetData(data);
       wxArrayString my_filenames = data.GetFilenames();
-      if (!my_filenames.IsEmpty()){
+      if (!my_filenames.IsEmpty()) {
         m_path_ctrl->SetValue(my_filenames[0]);
       }
     }
