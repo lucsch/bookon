@@ -47,6 +47,9 @@ ControlMain::ControlMain(wxTreeCtrl *tree, wxDataViewListCtrl *list) {
   _create_contextual_menu();
   _connect_event();
 
+  //m_tree->SetDropTarget(new BKDNDDropTargetText(this));
+  m_tree->SetDropTarget( new BKDNDDropTarget(this));
+
   m_root = m_tree->AddRoot("Root");
   m_tree->SetBackgroundColour(m_list->GetBackgroundColour().GetAsString());
 
@@ -554,4 +557,8 @@ void ControlMain::OnDragBookMarkStart(wxDataViewEvent &event) {
       break;
   }
   event.Veto();
+}
+
+void ControlMain::DropData(wxCoord x, wxCoord y, const wxString &text) {
+  wxLogDebug("Text dropped: %s", text);
 }

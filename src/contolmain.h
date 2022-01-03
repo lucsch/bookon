@@ -71,6 +71,8 @@ class ControlMain {
   bool SaveFile(const wxString& pathname);
   void OpenFile(const wxString& pathname);
 
+  void DropData(wxCoord x, wxCoord y, const wxString& text);
+
  private:
   wxTreeCtrl* m_tree;
   wxDataViewListCtrl* m_list;
