@@ -6,6 +6,7 @@
 
 #include "bookmark.pb.h"
 #include "framebookmark.h"
+#include "bookdnd.h"
 using namespace bk;
 
 BKTreeItemData::BKTreeItemData(BKTreeItemDataType type) {
@@ -65,6 +66,7 @@ void ControlMain::_connect_event() {  // connecting tree events
   // connecting list event
   m_list->Bind(wxEVT_DATAVIEW_ITEM_ACTIVATED, &ControlMain::OnDoubleClickList, this, m_list->GetId());
   m_list->Bind(wxEVT_DATAVIEW_ITEM_CONTEXT_MENU, &ControlMain::OnRightClickMenu, this, m_list->GetId());
+  m_list->Bind(wxEVT_DATAVIEW_ITEM_BEGIN_DRAG, &ControlMain::OnDragBookMarkStart, this, m_list->GetId());
 
   // connecting contextual menu
   m_list->Bind(wxEVT_MENU, &ControlMain::OnMenuEdit, this, m_menui_ctxt_edit->GetId());
@@ -485,49 +487,71 @@ void ControlMain::OnMenuEdit(wxCommandEvent &event) {
 }
 
 void ControlMain::OnMenuOpen(wxCommandEvent &event) {
-  BookMark my_book;
-  if (!_get_list_selected_bookmark(my_book)) {
+  BookMark * my_book = _get_list_selected_bookmark();
+  if (my_book == nullptr){
     return;
   }
-  my_book.m_type = BKM_OPEN;
-  my_book.DoAction();
+  BookMark bk_copy = *my_book;
+  bk_copy.m_type = BKM_OPEN;
+  bk_copy.DoAction();
 }
 
 void ControlMain::OnMenuCopy(wxCommandEvent &event) {
-  BookMark my_book;
-  if (!_get_list_selected_bookmark(my_book)) {
+  BookMark * my_book = _get_list_selected_bookmark();
+  if (my_book == nullptr){
     return;
   }
-  my_book.m_type = BKM_COPY;
-  my_book.DoAction();
+  BookMark bk_copy = *my_book;
+  bk_copy.m_type = BKM_COPY;
+  bk_copy.DoAction();
 }
 
 void ControlMain::OnMenuWeb(wxCommandEvent &event) {
-  BookMark my_book;
-  if (!_get_list_selected_bookmark(my_book)) {
+  BookMark * my_book = _get_list_selected_bookmark();
+  if (my_book == nullptr){
     return;
   }
-  my_book.m_type = BKM_WEB;
-  my_book.DoAction();
+  BookMark bk_copy = *my_book;
+  bk_copy.m_type = BKM_WEB;
+  bk_copy.DoAction();
 }
 
-bool ControlMain::_get_list_selected_bookmark(BookMark &bookmark) {
+BookMark * ControlMain::_get_list_selected_bookmark() {
   wxASSERT(m_list);
   wxDataViewItem my_selected_item = m_list->GetSelection();
   if (!my_selected_item.IsOk()) {
-    return false;
+    return nullptr;
   }
 
   if (!m_displayed_id.IsOk()) {
-    return false;
+    return nullptr;
   }
 
   auto *my_data = dynamic_cast<BKTreeItemData *>(m_tree->GetItemData(m_displayed_id));
   if (my_data == nullptr) {
-    return false;
+    return nullptr;
   }
 
-  BookMark my_book = my_data->GetBookmarks()[m_list->ItemToRow(my_selected_item)];
-  bookmark = my_book;
-  return true;
+  return &my_data->GetBookmarks()[m_list->ItemToRow(my_selected_item)];
+}
+
+void ControlMain::OnDragBookMarkStart(wxDataViewEvent &event) {
+  wxLogDebug("starting dragging");
+
+  BKDNDDataObject my_data(_get_list_selected_bookmark(), m_displayed_id);
+  wxDropSource drag_source (m_list);
+  drag_source.SetData(my_data);
+  wxDragResult result = drag_source.DoDragDrop( true );
+  switch (result) {
+    case wxDragCopy:
+      wxLogDebug("Data copied!");
+      break;
+    case wxDragMove:
+      wxLogDebug("Data moved");
+      break;
+    default:
+      wxLogDebug("Nothing done!");
+      break;
+  }
+  event.Veto();
 }

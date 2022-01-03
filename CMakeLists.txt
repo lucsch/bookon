@@ -42,6 +42,7 @@ ADD_EXECUTABLE(${CMAKE_PROJECT_NAME} MACOSX_BUNDLE WIN32
         src/frameabout.cpp
         src/contolmain.cpp
         src/framebookmark.cpp
+        src/bookdnd.cpp
         ${CMAKE_BINARY_DIR}/version.cpp
         ${ICON_PATH}
         src/resource.rc)

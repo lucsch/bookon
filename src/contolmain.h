@@ -63,6 +63,7 @@ class ControlMain {
   void OnMenuOpen(wxCommandEvent& event);
   void OnMenuCopy(wxCommandEvent& event);
   void OnMenuWeb(wxCommandEvent& event);
+  void OnDragBookMarkStart(wxDataViewEvent & event);
 
   BKTreeItemData* GetItemData(const wxTreeItemId& id);
   BKTreeItemData* GetItemDataCopy(const wxTreeItemId& id);
@@ -84,7 +85,7 @@ class ControlMain {
   void _iterate_tree(const wxTreeItemId& id, bk::Folder* actual_folder);
   void _populate_tree(const wxTreeItemId idParent, const bk::Folder& folder);
 
-  bool _get_list_selected_bookmark(BookMark& bookmark);
+  BookMark * _get_list_selected_bookmark();
 
   void _create_contextual_menu();
   wxMenu m_contextual_menu;
