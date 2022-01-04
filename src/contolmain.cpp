@@ -52,7 +52,7 @@ bool BKTreeItemData::RemoveBookMarkAtIndex(int index, BookMark *removed_bookmark
 }
 
 BKTreeItemData *ControlMain::GetItemData(const wxTreeItemId &id) {
-  return (BKTreeItemData *)m_tree->GetItemData(id);
+  return dynamic_cast<BKTreeItemData*>(m_tree->GetItemData(id));
 }
 
 ControlMain::ControlMain(wxTreeCtrl *tree, wxDataViewListCtrl *list) {
@@ -286,7 +286,7 @@ void ControlMain::OnDoubleClick(wxTreeEvent &event) {
 }
 
 void ControlMain::_display_bookmarks_for_item(const wxTreeItemId &my_sel_id) {
-  BKTreeItemData *my_data = (BKTreeItemData *)m_tree->GetItemData(my_sel_id);
+  BKTreeItemData *my_data = GetItemData(my_sel_id);
   if (!my_data) {
     return;
   }
@@ -307,7 +307,7 @@ void ControlMain::BookMarkEdit() {
   }
 
   int my_bk_index = (int)m_list->GetItemData(m_list->GetSelection());
-  BKTreeItemData *my_data = (BKTreeItemData *)m_tree->GetItemData(m_tree->GetSelection());
+  BKTreeItemData *my_data = GetItemData(m_tree->GetSelection());
   if (!my_data) {
     return;
   }
@@ -349,7 +349,7 @@ void ControlMain::BookMarkDel() {
   }
 
   int my_bk_index = (int)m_list->GetItemData(m_list->GetSelection());
-  auto *my_data = dynamic_cast<BKTreeItemData *>(m_tree->GetItemData(m_tree->GetSelection()));
+  BKTreeItemData *my_data = GetItemData(m_tree->GetSelection());
   if (!my_data) {
     return;
   }
@@ -396,7 +396,7 @@ bool ControlMain::SaveFile(const wxString &pathname) {
 void ControlMain::_iterate_tree(const wxTreeItemId &id, bk::Folder *actual_folder) {
   wxString my_text = m_tree->GetItemText(id);
   wxLogMessage(my_text);
-  auto *my_data = dynamic_cast<BKTreeItemData *>(m_tree->GetItemData(id));
+  BKTreeItemData *my_data = GetItemData(m_tree->GetItemData(id));
   wxASSERT(my_data);
   if (my_data->GetType() == BK_FOLDER) {
     actual_folder->set_name(my_text);
@@ -472,7 +472,7 @@ void ControlMain::OnDoubleClickList(wxDataViewEvent &event) {
     return;
   }
 
-  BKTreeItemData *my_data = (BKTreeItemData *)m_tree->GetItemData(m_displayed_id);
+  BKTreeItemData *my_data = GetItemData(m_displayed_id);
   if (!my_data) {
     return;
   }
@@ -544,7 +544,7 @@ BookMark *ControlMain::_get_list_selected_bookmark() {
     return nullptr;
   }
 
-  auto *my_data = dynamic_cast<BKTreeItemData *>(m_tree->GetItemData(m_displayed_id));
+  BKTreeItemData *my_data = GetItemData(m_displayed_id);
   if (my_data == nullptr) {
     return nullptr;
   }
@@ -589,13 +589,13 @@ void ControlMain::DropData(wxCoord x, wxCoord y, const int bookmark_index) {
   }
 
   // move the item from one tree data to the other
-  auto my_origin_data = dynamic_cast<BKTreeItemData*>(m_tree->GetItemData(m_displayed_id));
+  BKTreeItemData * my_origin_data = GetItemData(m_displayed_id);
   BookMark my_moved_book;
   if (!my_origin_data->RemoveBookMarkAtIndex(bookmark_index, &my_moved_book)){
     return;
   }
 
-  auto my_dest_data = dynamic_cast<BKTreeItemData*>(m_tree->GetItemData(my_hitted_id));
+  BKTreeItemData * my_dest_data = GetItemData(my_hitted_id);
   my_dest_data->GetBookmarks().push_back(my_moved_book);
 
   _display_bookmarks_for_item(m_displayed_id);
