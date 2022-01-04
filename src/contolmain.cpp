@@ -271,7 +271,7 @@ void ControlMain::BookMarkEdit() {
   }
 
   int my_bk_index = (int)m_list->GetItemData(m_list->GetSelection());
-  BKTreeItemData *my_data = GetItemData(m_tree->GetSelection());
+  BKTreeItemData *my_data = GetItemData(m_displayed_id);
   if (!my_data) {
     return;
   }
@@ -282,7 +282,7 @@ void ControlMain::BookMarkEdit() {
     return;
   }
   my_data->GetBookmarks()[my_bk_index] = myDlg.GetBookmark();
-  _display_bookmarks_for_item(m_tree->GetSelection());
+  _display_bookmarks_for_item(m_displayed_id);
 }
 
 void ControlMain::BookMarkAdd() {
