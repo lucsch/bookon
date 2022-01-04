@@ -13,23 +13,21 @@
 
 #include "contolmain.h"
 
-enum {
-  ID_QUIT = wxID_EXIT,
-  ID_ABOUT = wxID_ABOUT,
-  ID_FILE_NEW = wxID_NEW,
-  ID_FILE_OPEN = wxID_OPEN,
-  ID_FILE_SAVE = wxID_SAVE,
-  ID_FILE_SAVE_AS = wxID_SAVEAS,
-  ID_BOOK_SEARCH = wxID_FIND,
-  ID_GROUP_ADD,
-  ID_GROUP_ADD_INSIDE,
-  ID_GROUP_REMOVE,
-  ID_GROUP_ENTRY_ADD,
-  ID_GROUP_ENTRY_REMOVE,
-  ID_BOOK_ADD,
-  ID_BOOK_EDIT,
-  ID_BOOK_REMOVE
-};
+const int ID_QUIT = wxID_EXIT;
+const int ID_ABOUT = wxID_ABOUT;
+const int ID_FILE_NEW = wxID_NEW;
+const int ID_FILE_OPEN = wxID_OPEN;
+const int ID_FILE_SAVE = wxID_SAVE;
+const int ID_FILE_SAVE_AS = wxID_SAVEAS;
+const int ID_BOOK_SEARCH = wxID_FIND;
+extern const int ID_GROUP_ADD;
+extern const int ID_GROUP_ADD_INSIDE;
+extern const int ID_GROUP_REMOVE;
+extern const int ID_GROUP_ENTRY_ADD;
+extern const int ID_GROUP_ENTRY_REMOVE;
+extern const int ID_BOOK_ADD;
+extern const int ID_BOOK_EDIT;
+extern const int ID_BOOK_REMOVE;
 
 class FrameMain : public wxFrame {
  public:

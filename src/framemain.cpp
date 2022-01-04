@@ -3,6 +3,15 @@
 #include "bitmap.h"
 #include "frameabout.h"
 
+const int ID_GROUP_ADD = wxNewId();
+const int ID_GROUP_ADD_INSIDE = wxNewId();
+const int ID_GROUP_REMOVE = wxNewId();
+const int ID_GROUP_ENTRY_ADD = wxNewId();
+const int ID_GROUP_ENTRY_REMOVE = wxNewId();
+const int ID_BOOK_ADD = wxNewId();
+const int ID_BOOK_EDIT = wxNewId();
+const int ID_BOOK_REMOVE = wxNewId();
+
 extern const char *bookon_MAJOR_VERSION;
 extern const char *bookon_MINOR_VERSION;
 extern const char *GIT_REV;
