@@ -104,7 +104,7 @@ wxTreeItemId ControlMain::AddGroupItem(const wxString &string) {
   wxTreeItemId my_selected_item = m_tree->GetSelection();
   if (!my_selected_item.IsOk()) {
     wxLogError("Please select a group entry first!");
-    return wxTreeItemId();
+    return {};
   }
 
   wxTreeItemId my_insert_pos;
@@ -225,7 +225,7 @@ BKTreeItemData *ControlMain::GetItemData(const wxTreeItemId &id) {
 }
 
 BKTreeItemData *ControlMain::GetItemDataCopy(const wxTreeItemId &id) {
-  BKTreeItemData *my_data = new BKTreeItemData((BKTreeItemData *)m_tree->GetItemData(id));
+  auto *my_data = new BKTreeItemData((BKTreeItemData *)m_tree->GetItemData(id));
   return my_data;
 }
 
@@ -342,7 +342,7 @@ bool ControlMain::SaveFile(const wxString &pathname) {
   wxTreeItemId root = m_tree->GetRootItem();
   wxASSERT(root.IsOk());
   wxTreeItemId id;
-  wxTreeItemIdValue cookie = 0;
+  wxTreeItemIdValue cookie = nullptr;
   for (int i = 0; i < m_tree->GetChildrenCount(root, false); i++) {
     if (!cookie) {
       id = m_tree->GetFirstChild(root, cookie);
@@ -425,7 +425,7 @@ void ControlMain::_populate_tree(const wxTreeItemId idParent, const Folder &fold
       my_book.LoadFromProto(folder.bookmarks(b));
       my_bookmarks.push_back(my_book);
     }
-    BKTreeItemData *ptreedata = new BKTreeItemData(BK_ITEM);
+    auto *ptreedata = new BKTreeItemData(BK_ITEM);
     ptreedata->SetBookmarks(my_bookmarks);
     m_tree->AppendItem(idParent, folder.name(), -1, -1, ptreedata);
   }
