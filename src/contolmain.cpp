@@ -359,8 +359,7 @@ bool ControlMain::SaveFile(const wxString &pathname) {
 
 void ControlMain::_iterate_tree(const wxTreeItemId &id, bk::Folder *actual_folder) {
   wxString my_text = m_tree->GetItemText(id);
-  wxLogMessage(my_text);
-  BKTreeItemData *my_data = GetItemData(m_tree->GetItemData(id));
+  BKTreeItemData *my_data = GetItemData(id);
   wxASSERT(my_data);
   if (my_data->GetType() == BK_FOLDER) {
     actual_folder->set_name(my_text);
