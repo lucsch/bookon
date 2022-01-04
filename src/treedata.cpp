@@ -1,6 +1,4 @@
 #include "treedata.h"
-#include "bookmark.pb.h"
-
 
 BKTreeItemData::BKTreeItemData(BKTreeItemDataType type) {
   m_type = type;

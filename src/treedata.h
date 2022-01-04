@@ -19,8 +19,8 @@ enum BKTreeItemDataType { BK_FOLDER = 0, BK_ITEM };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 class BKTreeItemData : public wxTreeItemData {
  public:
-  BKTreeItemData(BKTreeItemDataType type);
-  BKTreeItemData(const BKTreeItemData* data);
+  explicit BKTreeItemData(BKTreeItemDataType type);
+  explicit BKTreeItemData(const BKTreeItemData* data);
 
   BKTreeItemDataType GetType() const;
   void SetBookmarks(const wxVector<BookMark>& mBookmarks);
