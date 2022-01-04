@@ -15,7 +15,6 @@ ControlMain::ControlMain(wxTreeCtrl *tree, wxDataViewListCtrl *list) {
   _create_contextual_menu();
   _connect_event();
 
-  // m_tree->SetDropTarget(new BKDNDDropTargetText(this));
   m_tree->SetDropTarget(new BKDNDDropTarget(this));
 
   m_root = m_tree->AddRoot("Root");
@@ -59,7 +58,7 @@ wxTreeItemId ControlMain::AddGroup(const wxString &group_name, bool is_root_chil
 
   // add a child to the root node
   if (is_root_child) {
-    return m_tree->AppendItem(m_root, group_name, -1, -1, new BKTreeItemData(BK_FOLDER));
+    return m_tree->AppendItem(m_root, group_name, 0, -1, new BKTreeItemData(BK_FOLDER));
   }
 
   wxTreeItemId my_selected_item = m_tree->GetSelection();
@@ -74,7 +73,7 @@ wxTreeItemId ControlMain::AddGroup(const wxString &group_name, bool is_root_chil
       my_parent = m_tree->GetItemParent(my_selected_item);
     }
   }
-  wxTreeItemId my_added_group = m_tree->AppendItem(my_parent, group_name, -1, -1, new BKTreeItemData(BK_FOLDER));
+  wxTreeItemId my_added_group = m_tree->AppendItem(my_parent, group_name, 0, -1, new BKTreeItemData(BK_FOLDER));
   if (my_parent != m_root) {
     m_tree->Expand(my_parent);
   }
@@ -120,7 +119,7 @@ wxTreeItemId ControlMain::AddGroupItem(const wxString &string) {
       my_insert_pos = my_selected_item;
     }
   }
-  wxTreeItemId my_added_item = m_tree->AppendItem(my_insert_pos, string, -1, -1, new BKTreeItemData(BK_ITEM));
+  wxTreeItemId my_added_item = m_tree->AppendItem(my_insert_pos, string, 1, -1, new BKTreeItemData(BK_ITEM));
   if (my_insert_pos != m_root) {
     m_tree->Expand(my_insert_pos);
   }
@@ -413,7 +412,7 @@ void ControlMain::OpenFile(const wxString &pathname) {
 
 void ControlMain::_populate_tree(const wxTreeItemId idParent, const Folder &folder) {
   if (folder.is_group()) {
-    wxTreeItemId id = m_tree->AppendItem(idParent, folder.name(), -1, -1, new BKTreeItemData(BK_FOLDER));
+    wxTreeItemId id = m_tree->AppendItem(idParent, folder.name(), 0, -1, new BKTreeItemData(BK_FOLDER));
     // re-entring method for adding folders
     for (int f = 0; f < folder.folders_size(); f++) {
       _populate_tree(id, folder.folders(f));
@@ -427,7 +426,7 @@ void ControlMain::_populate_tree(const wxTreeItemId idParent, const Folder &fold
     }
     auto *ptreedata = new BKTreeItemData(BK_ITEM);
     ptreedata->SetBookmarks(my_bookmarks);
-    m_tree->AppendItem(idParent, folder.name(), -1, -1, ptreedata);
+    m_tree->AppendItem(idParent, folder.name(), 1, -1, ptreedata);
   }
 }
 

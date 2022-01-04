@@ -32,6 +32,8 @@ FrameMain::FrameMain(const wxString &title) : wxFrame(NULL, wxID_ANY, title, wxD
   _connect_events();
   _create_toolbar();
 
+  _assign_image_to_treectrl();
+
   m_control = new ControlMain(m_tree_ctrl, m_list_ctrl);
   // m_tree_ctrl->EnableSystemTheme(false);
 }
@@ -278,4 +280,14 @@ void FrameMain::_create_toolbar() {
     my_toolbar->AddTool(ids[i], labels[i], *(my_bitmaps[i]));
   }
   my_toolbar->Realize();
+}
+
+void FrameMain::_assign_image_to_treectrl() {
+  wxASSERT(m_tree_ctrl);
+  auto my_image_list = new wxImageList(16,16);
+  std::vector<wxBitmap *> my_bitmaps = {_img_w_tree_folder, _img_w_tree_book};
+
+  my_image_list->Add(*my_bitmaps[0]);
+  my_image_list->Add(*my_bitmaps[1]);
+  m_tree_ctrl->SetImageList(my_image_list);
 }

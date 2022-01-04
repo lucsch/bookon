@@ -59,15 +59,15 @@ class FrameMain : public wxFrame {
   void _connect_events();
   void _create_controls();
   void _create_toolbar();
+  void _assign_image_to_treectrl();
+  void _update_title();
 
   wxTreeCtrl* m_tree_ctrl;
   wxDataViewListCtrl* m_list_ctrl;
   wxSearchCtrl* m_search_ctrl;
-
   ControlMain* m_control = nullptr;
   wxString m_document_name = wxEmptyString;
   wxString m_soft_name = _("Bookon");
-  void _update_title();
 };
 
 #endif

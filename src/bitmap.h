@@ -27,4 +27,8 @@ extern wxBitmap *_img_tb_find;
 extern wxBitmap *_img_tb_open;
 extern wxBitmap *_img_tb_edit_bookmark;
 
+// white tree images
+extern wxBitmap *_img_w_tree_book;
+extern wxBitmap *_img_w_tree_folder;
+
 #endif /* BITMAP_H */
