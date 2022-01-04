@@ -21,10 +21,18 @@ ControlMain::ControlMain(wxTreeCtrl *tree, wxDataViewListCtrl *list) {
   m_root = m_tree->AddRoot("Root");
   m_tree->SetBackgroundColour(m_list->GetBackgroundColour().GetAsString());
 
+  // computing list width
+  int my_width[] = {150, 320, 50};
+  int my_list_width = m_list->GetSize().GetWidth();
+  if (my_list_width - 50 > 0){
+    my_width[0] = wxRound((my_list_width -50) / 3.0);
+    my_width[1] = wxRound((my_list_width -50) / 3.0 * 2.0);
+  }
+
   // init list columns
-  m_list->AppendTextColumn(_("Description"));
-  m_list->AppendTextColumn(_("Path"), wxDATAVIEW_CELL_INERT, 400);
-  m_list->AppendTextColumn(_("Type"));
+  m_list->AppendTextColumn(_("Description"), wxDATAVIEW_CELL_INERT, my_width[0]);
+  m_list->AppendTextColumn(_("Path"), wxDATAVIEW_CELL_INERT,my_width[1]);
+  m_list->AppendTextColumn(_("Type"), wxDATAVIEW_CELL_INERT, my_width[2]);
 }
 
 void ControlMain::_connect_event() {  // connecting tree events
