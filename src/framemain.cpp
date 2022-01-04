@@ -284,8 +284,14 @@ void FrameMain::_create_toolbar() {
 
 void FrameMain::_assign_image_to_treectrl() {
   wxASSERT(m_tree_ctrl);
-  auto my_image_list = new wxImageList(16,16);
-  std::vector<wxBitmap *> my_bitmaps = {_img_w_tree_folder, _img_w_tree_book};
+  auto my_image_list = new wxImageList(18,18);
+  std::vector<wxBitmap *> my_bitmaps = {_img_tree_folder, _img_tree_book};
+
+  // support for dark theme
+  wxSystemAppearance sys_app = wxSystemSettings::GetAppearance();
+  if (sys_app.IsDark()){
+    my_bitmaps = {_img_w_tree_folder, _img_w_tree_book};
+  }
 
   my_image_list->Add(*my_bitmaps[0]);
   my_image_list->Add(*my_bitmaps[1]);

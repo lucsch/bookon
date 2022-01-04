@@ -31,4 +31,8 @@ extern wxBitmap *_img_tb_edit_bookmark;
 extern wxBitmap *_img_w_tree_book;
 extern wxBitmap *_img_w_tree_folder;
 
+// black tree images
+extern wxBitmap *_img_tree_book;
+extern wxBitmap *_img_tree_folder;
+
 #endif /* BITMAP_H */
