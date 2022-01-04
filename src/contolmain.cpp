@@ -9,52 +9,6 @@
 #include "framebookmark.h"
 using namespace bk;
 
-BKTreeItemData::BKTreeItemData(BKTreeItemDataType type) {
-  m_type = type;
-}
-BKTreeItemDataType BKTreeItemData::GetType() const {
-  return m_type;
-}
-
-BKTreeItemData::BKTreeItemData(const BKTreeItemData *data) {
-  if (data == nullptr) {
-    wxLogDebug("BKTreeItemData Initialisation failed!");
-    return;
-  }
-  m_type = data->GetType();
-  m_bookmarks.clear();
-  for (wxVector<BookMark>::const_iterator iter = data->m_bookmarks.begin(); iter != data->m_bookmarks.end(); ++iter) {
-    m_bookmarks.push_back(*iter);
-  }
-}
-
-wxVector<BookMark> &BKTreeItemData::GetBookmarks() {
-  return m_bookmarks;
-}
-
-void BKTreeItemData::SetBookmarks(const wxVector<BookMark> &mBookmarks) {
-  m_bookmarks = mBookmarks;
-}
-
-bool BKTreeItemData::RemoveBookMarkAtIndex(int index, BookMark *removed_bookmark) {
-  if (index >= m_bookmarks.size()){
-    wxLogError("Index :%d is out of bound!", index);
-    return false;
-  }
-
-  if (removed_bookmark != nullptr){
-    *removed_bookmark = m_bookmarks[index];
-  }
-
-  wxVector<BookMark>::iterator  iter = m_bookmarks.begin();
-  m_bookmarks.erase(iter + index);
-  return true;
-}
-
-BKTreeItemData *ControlMain::GetItemData(const wxTreeItemId &id) {
-  return dynamic_cast<BKTreeItemData*>(m_tree->GetItemData(id));
-}
-
 ControlMain::ControlMain(wxTreeCtrl *tree, wxDataViewListCtrl *list) {
   m_tree = tree;
   m_list = list;
@@ -257,6 +211,10 @@ bool ControlMain::_is_item(const wxTreeItemId &id) {
     return true;
   }
   return false;
+}
+
+BKTreeItemData *ControlMain::GetItemData(const wxTreeItemId &id) {
+  return dynamic_cast<BKTreeItemData *>(m_tree->GetItemData(id));
 }
 
 BKTreeItemData *ControlMain::GetItemDataCopy(const wxTreeItemId &id) {
@@ -579,23 +537,23 @@ void ControlMain::OnDragBookMarkStart(wxDataViewEvent &event) {
 void ControlMain::DropData(wxCoord x, wxCoord y, const int bookmark_index) {
   wxLogDebug("Bookmark dropped: %d", bookmark_index);
   wxTreeItemId my_hitted_id = m_tree->HitTest(wxPoint(x, y));
-  if (!_is_item(my_hitted_id) || my_hitted_id == m_displayed_id){
+  if (!_is_item(my_hitted_id) || my_hitted_id == m_displayed_id) {
     return;
   }
 
-  if (bookmark_index == wxNOT_FOUND){
+  if (bookmark_index == wxNOT_FOUND) {
     wxLogDebug("Bookmark index = -1");
     return;
   }
 
   // move the item from one tree data to the other
-  BKTreeItemData * my_origin_data = GetItemData(m_displayed_id);
+  BKTreeItemData *my_origin_data = GetItemData(m_displayed_id);
   BookMark my_moved_book;
-  if (!my_origin_data->RemoveBookMarkAtIndex(bookmark_index, &my_moved_book)){
+  if (!my_origin_data->RemoveBookMarkAtIndex(bookmark_index, &my_moved_book)) {
     return;
   }
 
-  BKTreeItemData * my_dest_data = GetItemData(my_hitted_id);
+  BKTreeItemData *my_dest_data = GetItemData(my_hitted_id);
   my_dest_data->GetBookmarks().push_back(my_moved_book);
 
   _display_bookmarks_for_item(m_displayed_id);
@@ -604,17 +562,17 @@ void ControlMain::DropData(wxCoord x, wxCoord y, const int bookmark_index) {
 bool ControlMain::IsDropPossible(wxCoord x, wxCoord y) {
   wxTreeItemId my_hitted_id = m_tree->HitTest(wxPoint(x, y));
   // dropping is not on an item!
-  if (!my_hitted_id.IsOk()){
+  if (!my_hitted_id.IsOk()) {
     return false;
   }
 
   // dropping on the displayed item... nothing move
-  if (my_hitted_id == m_displayed_id){
+  if (my_hitted_id == m_displayed_id) {
     return false;
   }
 
   // dropping on a folder ... not possible
-  if (_is_folder(my_hitted_id)){
+  if (_is_folder(my_hitted_id)) {
     return false;
   }
   return true;
