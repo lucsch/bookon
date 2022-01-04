@@ -19,7 +19,7 @@ const int ID_FILE_NEW = wxID_NEW;
 const int ID_FILE_OPEN = wxID_OPEN;
 const int ID_FILE_SAVE = wxID_SAVE;
 const int ID_FILE_SAVE_AS = wxID_SAVEAS;
-const int ID_BOOK_SEARCH = wxID_FIND;
+const int ID_BOOK_FIND = wxID_FIND;
 extern const int ID_GROUP_ADD;
 extern const int ID_GROUP_ADD_INSIDE;
 extern const int ID_GROUP_REMOVE;
@@ -44,6 +44,7 @@ class FrameMain : public wxFrame {
   void OnBookmarkAdd(wxCommandEvent& event);
   void OnBookmarkEdit(wxCommandEvent& event);
   void OnBookmarkRemove(wxCommandEvent& event);
+  void OnBookmarkFind(wxCommandEvent& event);
 
   void OnNew(wxCommandEvent& event);
   void OnOpen(wxCommandEvent& event);

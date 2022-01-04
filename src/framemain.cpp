@@ -123,6 +123,7 @@ void FrameMain::_connect_events() {
   Bind(wxEVT_MENU, &FrameMain::OnBookmarkAdd, this, ID_BOOK_ADD);
   Bind(wxEVT_MENU, &FrameMain::OnBookmarkEdit, this, ID_BOOK_EDIT);
   Bind(wxEVT_MENU, &FrameMain::OnBookmarkRemove, this, ID_BOOK_REMOVE);
+  Bind(wxEVT_MENU, &FrameMain::OnBookmarkFind, this, ID_BOOK_FIND);
 }
 
 void FrameMain::_create_statusbar() {
@@ -163,7 +164,7 @@ void FrameMain::_create_menubar() {
   bookmarkMenu->Append(ID_BOOK_EDIT, _("Edit bookmark"));
   bookmarkMenu->Append(ID_BOOK_REMOVE, _("Remove bookmark"));
   bookmarkMenu->AppendSeparator();
-  bookmarkMenu->Append(ID_BOOK_SEARCH, _("Search...") + _T("\tCtrl+F"));
+  bookmarkMenu->Append(ID_BOOK_FIND, _("Search...") + _T("\tCtrl+F"));
   menuBar->Append(bookmarkMenu, _("&Bookmarks"));
 
   // HELP
@@ -215,6 +216,10 @@ void FrameMain::OnBookmarkRemove(wxCommandEvent &event) {
   m_control->BookMarkDel();
 }
 
+void FrameMain::OnBookmarkFind(wxCommandEvent &event) {
+  m_search_ctrl->SetFocus();
+}
+
 void FrameMain::OnNew(wxCommandEvent &event) {
   m_document_name = _("UNTITLED");
   _update_title();
@@ -240,8 +245,8 @@ void FrameMain::OnSave(wxCommandEvent &event) {
   wxASSERT(m_control);
   m_control->SaveFile(my_dlg.GetPath());
 }
-
 void FrameMain::OnSaveAs(wxCommandEvent &event) {}
+
 void FrameMain::do_open_file(const wxString &filename) {
   wxASSERT(m_control);
   m_control->OpenFile(filename);
@@ -257,7 +262,7 @@ void FrameMain::_create_toolbar() {
   wxToolBar *my_toolbar = FrameMain::CreateToolBar(my_toolbar_style);
   wxASSERT(my_toolbar);
 
-  int ids[] = {ID_FILE_OPEN, ID_GROUP_ADD, ID_GROUP_ENTRY_ADD, ID_BOOK_ADD, ID_BOOK_EDIT, ID_BOOK_SEARCH};
+  int ids[] = {ID_FILE_OPEN, ID_GROUP_ADD, ID_GROUP_ENTRY_ADD, ID_BOOK_ADD, ID_BOOK_EDIT, ID_BOOK_FIND};
   wxString labels[] = {_("Open"), _("Add group"), _("Add entry"), _("Add bookmark"), _("Edit bookmark"), _("Find")};
   std::vector<wxBitmap *> my_bitmaps = {_img_tb_open,         _img_tb_add_folder,    _img_tb_add_item,
                                         _img_tb_add_bookmark, _img_tb_edit_bookmark, _img_tb_find};
