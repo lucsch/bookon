@@ -17,6 +17,7 @@ extern wxBitmap *_img_tb_w_add_folder;
 extern wxBitmap *_img_tb_w_add_item;
 extern wxBitmap *_img_tb_w_find;
 extern wxBitmap *_img_tb_w_open;
+extern wxBitmap *_img_tb_w_edit_bookmark;
 
 // black toolbar images
 extern wxBitmap *_img_tb_add_bookmark;
@@ -24,5 +25,6 @@ extern wxBitmap *_img_tb_add_folder;
 extern wxBitmap *_img_tb_add_item;
 extern wxBitmap *_img_tb_find;
 extern wxBitmap *_img_tb_open;
+extern wxBitmap *_img_tb_edit_bookmark;
 
 #endif /* BITMAP_H */

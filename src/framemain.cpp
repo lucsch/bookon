@@ -257,15 +257,16 @@ void FrameMain::_create_toolbar() {
   wxToolBar *my_toolbar = FrameMain::CreateToolBar(my_toolbar_style);
   wxASSERT(my_toolbar);
 
-  int ids[] = {ID_FILE_OPEN, ID_GROUP_ADD, ID_GROUP_ENTRY_ADD, ID_BOOK_ADD, ID_BOOK_SEARCH};
-  wxString labels[] = {_("Open"), _("Add group"), _("Add entry"), _("Add bookmark"), _("Find")};
-  std::vector<wxBitmap *> my_bitmaps = {_img_tb_open, _img_tb_add_folder, _img_tb_add_item, _img_tb_add_bookmark,
-                                        _img_tb_find};
+  int ids[] = {ID_FILE_OPEN, ID_GROUP_ADD, ID_GROUP_ENTRY_ADD, ID_BOOK_ADD, ID_BOOK_EDIT, ID_BOOK_SEARCH};
+  wxString labels[] = {_("Open"), _("Add group"), _("Add entry"), _("Add bookmark"), _("Edit bookmark"), _("Find")};
+  std::vector<wxBitmap *> my_bitmaps = {_img_tb_open,         _img_tb_add_folder,    _img_tb_add_item,
+                                        _img_tb_add_bookmark, _img_tb_edit_bookmark, _img_tb_find};
 
   // support for dark theme
   wxSystemAppearance s = wxSystemSettings::GetAppearance();
   if (s.IsDark()) {
-    my_bitmaps = {_img_tb_w_open, _img_tb_w_add_folder, _img_tb_w_add_item, _img_tb_w_add_bookmark, _img_tb_w_find};
+    my_bitmaps = {_img_tb_w_open,         _img_tb_w_add_folder,    _img_tb_w_add_item,
+                  _img_tb_w_add_bookmark, _img_tb_w_edit_bookmark, _img_tb_w_find};
   }
 
   for (int i = 0; i < (sizeof(ids) / sizeof(int)); ++i) {
