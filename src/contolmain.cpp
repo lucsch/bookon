@@ -1,4 +1,3 @@
-
 #include "contolmain.h"
 
 #include <fstream>
