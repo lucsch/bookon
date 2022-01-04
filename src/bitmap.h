@@ -11,4 +11,18 @@ extern void initialize_images(void);
 
 extern wxBitmap *_img_bookon_icon;
 
+// white toolbar images
+extern wxBitmap *_img_tb_w_add_bookmark;
+extern wxBitmap *_img_tb_w_add_folder;
+extern wxBitmap *_img_tb_w_add_item;
+extern wxBitmap *_img_tb_w_find;
+extern wxBitmap *_img_tb_w_open;
+
+// black toolbar images
+extern wxBitmap *_img_tb_add_bookmark;
+extern wxBitmap *_img_tb_add_folder;
+extern wxBitmap *_img_tb_add_item;
+extern wxBitmap *_img_tb_find;
+extern wxBitmap *_img_tb_open;
+
 #endif /* BITMAP_H */

@@ -20,6 +20,7 @@ enum {
   ID_FILE_OPEN = wxID_OPEN,
   ID_FILE_SAVE = wxID_SAVE,
   ID_FILE_SAVE_AS = wxID_SAVEAS,
+  ID_BOOK_SEARCH = wxID_FIND,
   ID_GROUP_ADD,
   ID_GROUP_ADD_INSIDE,
   ID_GROUP_REMOVE,
@@ -58,6 +59,7 @@ class FrameMain : public wxFrame {
   void _create_statusbar();
   void _connect_events();
   void _create_controls();
+  void _create_toolbar();
 
   wxTreeCtrl* m_tree_ctrl;
   wxDataViewListCtrl* m_list_ctrl;
