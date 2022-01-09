@@ -20,9 +20,9 @@ set(ICON_PATH "${CMAKE_SOURCE_DIR}/art/bookon.icns")
 set_source_files_properties(${ICON_PATH} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 
 # remove deprecated warnings on windows
-if(MSVC)
+if (MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-endif()
+endif ()
 
 INCLUDE_DIRECTORIES(src)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
@@ -58,4 +58,24 @@ install(TARGETS ${PROJECT_NAME}
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION bin
         BUNDLE DESTINATION .)
+
+# installer
+if (MSVC)
+    file(GLOB LIBS "${CMAKE_BINARY_DIR}/bin/*${CMAKE_SHARED_LIBRARY_SUFFIX}")
+    install(FILES ${LIBS} DESTINATION bin)
+    set(CPACK_GENERATOR "ZIP")
+endif ()
+
+if (APPLE)
+    set(CPACK_GENERATOR "DragNDrop")
+endif ()
+
+if (UNIX AND NOT APPLE)
+    INSTALL(FILES install/bookon.desktop DESTINATION share/applications)
+    INSTALL(FILES art/bookon128.png DESTINATION share/icons)
+    SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "lucsch") #required for debian packages
+    SET(CPACK_DEBIAN_PACKAGE_VERSION ${${PROJECT_NAME}_MAJOR_VERSION}.${${PROJECT_NAME}_MINOR_VERSION}.${GIT_NUMBER})
+    SET(CPACK_DEBIAN_FILE_NAME ${PROJECT_NAME}-${${PROJECT_NAME}_MAJOR_VERSION}.${${PROJECT_NAME}_MINOR_VERSION}.${GIT_NUMBER}-Linux.deb)
+endif (UNIX AND NOT APPLE)
+
 include(CPack)
