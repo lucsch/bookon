@@ -10,9 +10,14 @@ include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
 # using git version
-set(${PROJECT_NAME}_MAJOR_VERSION "0")
-set(${PROJECT_NAME}_MINOR_VERSION "1")
+set(${PROJECT_NAME}_MAJOR_VERSION "1")
+set(${PROJECT_NAME}_MINOR_VERSION "0")
 include(cmake_modules/version.cmake)
+
+# defining cmake version for installer mainly
+set(CMAKE_PROJECT_VERSION_MAJOR ${${PROJECT_NAME}_MAJOR_VERSION})
+set(CMAKE_PROJECT_VERSION_MINOR ${${PROJECT_NAME}_MINOR_VERSION})
+set(CMAKE_PROJECT_VERSION_PATCH ${GIT_NUMBER})
 
 # osx icon
 set(MACOSX_BUNDLE_ICON_FILE bookon.icns)
