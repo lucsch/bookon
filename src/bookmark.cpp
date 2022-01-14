@@ -33,8 +33,8 @@ const wxVector<wxVariant> BookMark::GetBookMarkDataForList() const {
 }
 
 void BookMark::SaveToProto(bk::Folder::Bookmark *pbk) {
-  pbk->set_description(m_description);
-  pbk->set_command(m_path);
+  pbk->set_description(m_description.ToUTF8());
+  pbk->set_command(m_path.ToUTF8());
   switch (m_type) {
     case BKM_OPEN:
       pbk->set_action(bk::Folder_Bookmark_Action_OPEN);
@@ -49,8 +49,8 @@ void BookMark::SaveToProto(bk::Folder::Bookmark *pbk) {
 }
 
 void BookMark::LoadFromProto(const Folder::Bookmark &proto_book) {
-  m_description = proto_book.description();
-  m_path = proto_book.command();
+  m_description = wxString::FromUTF8(proto_book.description());
+  m_path = wxString::FromUTF8(proto_book.command());
   switch (proto_book.action()) {
     case bk::Folder_Bookmark_Action_OPEN:
       m_type = BKM_OPEN;
