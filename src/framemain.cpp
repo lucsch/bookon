@@ -240,14 +240,27 @@ void FrameMain::OnOpen(wxCommandEvent &event) {
 }
 
 void FrameMain::OnSave(wxCommandEvent &event) {
-  wxFileDialog my_dlg(this, _("Save file"), "", "", "bkdoc files (*.bkdoc)|*.bkdoc", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-  if (my_dlg.ShowModal() == wxID_CANCEL) {
-    return;
-  }
-  wxASSERT(m_control);
-  m_control->SaveFile(my_dlg.GetPath());
+    if (m_document_name.IsEmpty()) {
+        OnSaveAs(event);
+        return;
+    }
+    m_control->SaveFile(m_document_name);
 }
-void FrameMain::OnSaveAs(wxCommandEvent &event) {}
+
+void FrameMain::OnSaveAs(wxCommandEvent &event) {
+    wxString default_dir = wxEmptyString;
+    if (!m_document_name.IsEmpty()){
+        default_dir = wxFileName(m_document_name).GetPath();
+    }
+
+    wxFileDialog my_dlg(this, _("Save file"), default_dir, "", "bkdoc files (*.bkdoc)|*.bkdoc", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+    if (my_dlg.ShowModal() == wxID_CANCEL) {
+        return;
+    }
+    wxASSERT(m_control);
+    m_control->SaveFile(my_dlg.GetPath());
+}
+
 
 void FrameMain::do_open_file(const wxString &filename) {
   wxASSERT(m_control);
