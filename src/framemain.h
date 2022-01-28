@@ -51,6 +51,8 @@ class FrameMain : public wxFrame {
   void OnSave(wxCommandEvent& event);
   void OnSaveAs(wxCommandEvent& event);
 
+  void OnUpdateIdleTitle(wxUpdateUIEvent & event);
+
   void do_open_file(const wxString& filename);
 
  private:
@@ -66,7 +68,7 @@ class FrameMain : public wxFrame {
   wxDataViewListCtrl* m_list_ctrl;
   wxSearchCtrl* m_search_ctrl;
   ControlMain* m_control = nullptr;
-  wxString m_document_name = wxEmptyString;
+  wxString m_document_name = _("UNTITLED");
   wxString m_soft_name = _("Bookon");
 };
 

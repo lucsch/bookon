@@ -55,6 +55,7 @@ void ControlMain::_connect_event() {  // connecting tree events
 
 wxTreeItemId ControlMain::AddGroup(const wxString &group_name, bool is_root_child) {
   wxASSERT(m_tree);
+  SetProjectModified(true);
 
   // add a child to the root node
   if (is_root_child) {
@@ -96,6 +97,7 @@ void ControlMain::RemoveGroup() {
     return;
   }
   m_tree->Delete(my_selected_item);
+  SetProjectModified(true);
 }
 
 wxTreeItemId ControlMain::AddGroupItem(const wxString &string) {
@@ -123,6 +125,7 @@ wxTreeItemId ControlMain::AddGroupItem(const wxString &string) {
   if (my_insert_pos != m_root) {
     m_tree->Expand(my_insert_pos);
   }
+  SetProjectModified(true);
   return my_added_item;
 }
 
@@ -137,6 +140,7 @@ void ControlMain::RemoveGroupItem() {
     wxLogError("Selected object isn't a item!");
     return;
   }
+  SetProjectModified(true);
   m_tree->Delete(my_selected_item);
 }
 
@@ -177,6 +181,7 @@ void ControlMain::OnBeginDrop(wxTreeEvent &event) {
   wxLogDebug("Dropping on: %s", m_tree->GetItemText(destination));
   _move_tree_item(m_dragged_item, event.GetItem());
   m_dragged_item.Unset();
+  SetProjectModified(true);
 }
 
 bool ControlMain::_move_tree_item(wxTreeItemId origin, wxTreeItemId destination) {
@@ -196,6 +201,7 @@ bool ControlMain::_move_tree_item(wxTreeItemId origin, wxTreeItemId destination)
   }
   m_tree->SelectItem(my_new_id);
   m_tree->Delete(origin);
+  SetProjectModified(true);
   return true;
 }
 
@@ -238,6 +244,7 @@ void ControlMain::OnEditLabelEnd(wxTreeEvent &event) {
     wxLogError("Empty name isn't allowed!");
     event.Veto();
   }
+  SetProjectModified(true);
 }
 
 void ControlMain::OnDoubleClick(wxTreeEvent &event) {
@@ -283,6 +290,7 @@ void ControlMain::BookMarkEdit() {
   }
   my_data->GetBookmarks()[my_bk_index] = myDlg.GetBookmark();
   _display_bookmarks_for_item(m_displayed_id);
+  SetProjectModified(true);
 }
 
 void ControlMain::BookMarkAdd() {
@@ -303,6 +311,7 @@ void ControlMain::BookMarkAdd() {
   my_data->GetBookmarks().push_back(book);
 
   _display_bookmarks_for_item(my_selection);
+  SetProjectModified(true);
 }
 
 void ControlMain::BookMarkDel() {
@@ -320,6 +329,7 @@ void ControlMain::BookMarkDel() {
   wxVector<BookMark>::iterator iter = my_data->GetBookmarks().begin();
   my_data->GetBookmarks().erase(iter + my_bk_index);
   _display_bookmarks_for_item(m_tree->GetSelection());
+  SetProjectModified(true);
 }
 
 bool ControlMain::_has_item_selected() {
@@ -354,6 +364,7 @@ bool ControlMain::SaveFile(const wxString &pathname) {
 
   std::fstream output(pathname.ToStdString(), std::ios::out | std::ios::trunc | std::ios::binary);
   my_list.SerializeToOstream(&output);
+  SetProjectModified(false);
   return true;
 }
 
@@ -562,6 +573,7 @@ void ControlMain::DropData(wxCoord x, wxCoord y, const int bookmark_index) {
   my_dest_data->GetBookmarks().push_back(my_moved_book);
 
   _display_bookmarks_for_item(m_displayed_id);
+  SetProjectModified(true);
 }
 
 bool ControlMain::IsDropPossible(wxCoord x, wxCoord y) {
@@ -581,4 +593,12 @@ bool ControlMain::IsDropPossible(wxCoord x, wxCoord y) {
     return false;
   }
   return true;
+}
+
+bool ControlMain::IsProjectModified() const {
+    return m_project_is_modified;
+}
+
+void ControlMain::SetProjectModified(bool mProjectIsModified) {
+  m_project_is_modified = mProjectIsModified;
 }

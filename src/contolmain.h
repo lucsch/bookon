@@ -54,6 +54,9 @@ class ControlMain {
   void DropData(wxCoord x, wxCoord y, const int bookmark_index);
   bool IsDropPossible(wxCoord x, wxCoord y);
 
+  bool IsProjectModified() const;
+  void SetProjectModified(bool mProjectIsModified);
+
  private:
   wxTreeCtrl* m_tree;
   wxDataViewListCtrl* m_list;
@@ -77,6 +80,9 @@ class ControlMain {
   wxMenuItem* m_menui_ctxt_web;
   wxMenuItem* m_menui_ctxt_copy;
 
+  bool m_project_is_modified = false;
+
+ private:
   void _connect_event();
 };
 

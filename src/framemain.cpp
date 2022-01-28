@@ -126,6 +126,7 @@ void FrameMain::_connect_events() {
   Bind(wxEVT_MENU, &FrameMain::OnBookmarkEdit, this, ID_BOOK_EDIT);
   Bind(wxEVT_MENU, &FrameMain::OnBookmarkRemove, this, ID_BOOK_REMOVE);
   Bind(wxEVT_MENU, &FrameMain::OnBookmarkFind, this, ID_BOOK_FIND);
+  Bind(wxEVT_UPDATE_UI, &FrameMain::OnUpdateIdleTitle, this, this->GetId());
 }
 
 void FrameMain::_create_statusbar() {
@@ -228,7 +229,11 @@ void FrameMain::OnNew(wxCommandEvent &event) {
 }
 
 void FrameMain::_update_title() {
-  SetTitle(m_soft_name + " - " + m_document_name);
+  wxString my_star = "";
+  if (m_control->IsProjectModified()){
+    my_star = "*";
+  }
+  SetTitle(m_soft_name + " - " + m_document_name + my_star);
 }
 
 void FrameMain::OnOpen(wxCommandEvent &event) {
@@ -309,4 +314,8 @@ void FrameMain::_assign_image_to_treectrl() {
   my_image_list->Add(*my_bitmaps[0]);
   my_image_list->Add(*my_bitmaps[1]);
   m_tree_ctrl->SetImageList(my_image_list);
+}
+
+void FrameMain::OnUpdateIdleTitle(wxUpdateUIEvent &event) {
+  _update_title();
 }
