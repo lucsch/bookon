@@ -34,6 +34,7 @@ class FrameMain : public wxFrame {
   FrameMain(const wxString& title);
 
   void OnQuit(wxCommandEvent& event);
+  void OnClose(wxCloseEvent & event);
   void OnAbout(wxCommandEvent& event);
   void OnGroupNew(wxCommandEvent& event);
   void OnGroupNewInside(wxCommandEvent& event);

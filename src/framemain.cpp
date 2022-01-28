@@ -112,6 +112,7 @@ void FrameMain::_create_controls() {
 
 void FrameMain::_connect_events() {
   Bind(wxEVT_MENU, &FrameMain::OnQuit, this, ID_QUIT);
+  Bind(wxEVT_CLOSE_WINDOW, &FrameMain::OnClose, this, wxID_ANY);
   Bind(wxEVT_MENU, &FrameMain::OnNew, this, ID_FILE_NEW);
   Bind(wxEVT_MENU, &FrameMain::OnOpen, this, ID_FILE_OPEN);
   Bind(wxEVT_MENU, &FrameMain::OnSave, this, ID_FILE_SAVE);
@@ -179,7 +180,7 @@ void FrameMain::_create_menubar() {
 }
 
 void FrameMain::OnQuit(wxCommandEvent &WXUNUSED(event)) {
-  Close(true);
+  Close(false);
 }
 
 void FrameMain::OnAbout(wxCommandEvent &WXUNUSED(event)) {
@@ -230,7 +231,7 @@ void FrameMain::OnNew(wxCommandEvent &event) {
 
 void FrameMain::_update_title() {
   wxString my_star = "";
-  if (m_control->IsProjectModified()){
+  if (m_control->IsProjectModified()) {
     my_star = "*";
   }
   SetTitle(m_soft_name + " - " + m_document_name + my_star);
@@ -245,27 +246,27 @@ void FrameMain::OnOpen(wxCommandEvent &event) {
 }
 
 void FrameMain::OnSave(wxCommandEvent &event) {
-    if (m_document_name.IsEmpty()) {
-        OnSaveAs(event);
-        return;
-    }
-    m_control->SaveFile(m_document_name);
+  if (m_document_name.IsEmpty()) {
+    OnSaveAs(event);
+    return;
+  }
+  m_control->SaveFile(m_document_name);
 }
 
 void FrameMain::OnSaveAs(wxCommandEvent &event) {
-    wxString default_dir = wxEmptyString;
-    if (!m_document_name.IsEmpty()){
-        default_dir = wxFileName(m_document_name).GetPath();
-    }
+  wxString default_dir = wxEmptyString;
+  if (!m_document_name.IsEmpty()) {
+    default_dir = wxFileName(m_document_name).GetPath();
+  }
 
-    wxFileDialog my_dlg(this, _("Save file"), default_dir, "", "bkdoc files (*.bkdoc)|*.bkdoc", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-    if (my_dlg.ShowModal() == wxID_CANCEL) {
-        return;
-    }
-    wxASSERT(m_control);
-    m_control->SaveFile(my_dlg.GetPath());
+  wxFileDialog my_dlg(this, _("Save file"), default_dir, "", "bkdoc files (*.bkdoc)|*.bkdoc",
+                      wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+  if (my_dlg.ShowModal() == wxID_CANCEL) {
+    return;
+  }
+  wxASSERT(m_control);
+  m_control->SaveFile(my_dlg.GetPath());
 }
-
 
 void FrameMain::do_open_file(const wxString &filename) {
   wxASSERT(m_control);
@@ -302,12 +303,12 @@ void FrameMain::_create_toolbar() {
 
 void FrameMain::_assign_image_to_treectrl() {
   wxASSERT(m_tree_ctrl);
-  auto my_image_list = new wxImageList(18,18);
+  auto my_image_list = new wxImageList(18, 18);
   std::vector<wxBitmap *> my_bitmaps = {_img_tree_folder, _img_tree_book};
 
   // support for dark theme
   wxSystemAppearance sys_app = wxSystemSettings::GetAppearance();
-  if (sys_app.IsDark()){
+  if (sys_app.IsDark()) {
     my_bitmaps = {_img_w_tree_folder, _img_w_tree_book};
   }
 
@@ -318,4 +319,14 @@ void FrameMain::_assign_image_to_treectrl() {
 
 void FrameMain::OnUpdateIdleTitle(wxUpdateUIEvent &event) {
   _update_title();
+}
+
+void FrameMain::OnClose(wxCloseEvent &event) {
+  if (m_control != nullptr && m_control->IsProjectModified()) {
+    if (wxMessageBox(_("Project not saved! Close anyway ?"), _("Project not saved"), wxOK | wxCANCEL) != wxOK) {
+      event.Veto();
+      return;
+    }
+  }
+  event.Skip();
 }
