@@ -61,20 +61,20 @@ jobs:
     # ✏️ If the Autobuild fails above, remove it and uncomment the following three lines
     #    and modify them (or add more) to build your code if your project
     #    uses a compiled language
+    - name: build
+      run: |
+        pip install conan
+        conan remote add bincrafters: https://bincrafters.jfrog.io/artifactory/api/conan/public-conan
+        conan config set general.revisions_enabled=1
 
-    - run: |
-       pip install conan
-       conan remote add bincrafters: https://bincrafters.jfrog.io/artifactory/api/conan/public-conan
-       conan config set general.revisions_enabled=1
-
-      # gitlab repository
-       conan remote add gitlab https://gitlab.com/api/v4/packages/conan
-       conan user gitlab+deploy-token-653038 -r gitlab -p sBwmejFz5Pn-gZPSNFMy
-             
-       mkdir ${{github.workspace}}/bin
-       cd ${{github.workspace}}/bin
-       conan install ..
-       conan build ..
+        # gitlab repository
+        conan remote add gitlab https://gitlab.com/api/v4/packages/conan
+        conan user gitlab+deploy-token-653038 -r gitlab -p sBwmejFz5Pn-gZPSNFMy
+        
+        mkdir ${{github.workspace}}/bin
+        cd ${{github.workspace}}/bin
+        conan install ..
+        conan build ..
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
