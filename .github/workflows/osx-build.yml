@@ -24,6 +24,8 @@ jobs:
           # bincrafter repository
           conan remote add bincrafters: https://bincrafters.jfrog.io/artifactory/api/conan/public-conan
           conan config set general.revisions_enabled=1
+          
+          conan profile update settings.compiler.libcxx=libstdc++11 default
 
           # gitlab repository
           conan remote add gitlab https://gitlab.com/api/v4/packages/conan
