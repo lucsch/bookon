@@ -63,6 +63,7 @@ jobs:
     #    uses a compiled language
     - name: build
       run: |
+        sudo apt-get update
         sudo apt-get install libgtk2.0-dev libgl1-mesa-dev
         pip install conan
         conan remote add bincrafters: https://bincrafters.jfrog.io/artifactory/api/conan/public-conan
