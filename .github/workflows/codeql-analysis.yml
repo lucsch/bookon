@@ -61,10 +61,57 @@ jobs:
     # ✏️ If the Autobuild fails above, remove it and uncomment the following three lines
     #    and modify them (or add more) to build your code if your project
     #    uses a compiled language
-    - name: build
+    - name: Install libraries
       run: |
         sudo apt-get update
         sudo apt-get install libgtk2.0-dev libgl1-mesa-dev
+        sudo apt-get install libx11-dev
+        sudo apt-get install libx11-xcb-dev
+        sudo apt-get install libfontenc-dev
+        sudo apt-get install libice-dev
+        sudo apt-get install libsm-dev
+        sudo apt-get install libxau-dev
+        sudo apt-get install libxaw7-dev
+        sudo apt-get install libxcomposite-dev
+        sudo apt-get install libxcursor-dev
+        sudo apt-get install libxdamage-dev
+        sudo apt-get install libxdmcp-dev
+        sudo apt-get install libxext-dev
+        sudo apt-get install libxfixes-dev
+        sudo apt-get install libxi-dev
+        sudo apt-get install libxinerama-dev
+        sudo apt-get install libxkbfile-dev
+        sudo apt-get install libxmu-dev
+        sudo apt-get install libxmuu-dev
+        sudo apt-get install libxpm-dev
+        sudo apt-get install libxrandr-dev
+        sudo apt-get install libxrender-dev
+        sudo apt-get install libxres-dev
+        sudo apt-get install libxss-dev
+        sudo apt-get install libxt-dev
+        sudo apt-get install libxtst-dev
+        sudo apt-get install libxv-dev
+        sudo apt-get install libxvmc-dev
+        sudo apt-get install libxxf86vm-dev
+        sudo apt-get install xtrans-dev
+        sudo apt-get install libxcb-render0-dev
+        sudo apt-get install libxcb-render-util0-dev
+        sudo apt-get install libxcb-xkb-dev
+        sudo apt-get install libxcb-icccm4-dev
+        sudo apt-get install libxcb-image0-dev
+        sudo apt-get install libxcb-keysyms1-dev
+        sudo apt-get install libxcb-randr0-dev
+        sudo apt-get install libxcb-shape0-dev
+        sudo apt-get install libxcb-sync-dev
+        sudo apt-get install libxcb-xfixes0-dev
+        sudo apt-get install libxcb-xinerama0-dev
+        sudo apt-get install xkb-data
+        sudo apt-get install libxcb-dri3-dev
+        sudo apt-get install uuid-dev
+        sudo apt-get install libxcb-util-dev
+
+    - name: Install conan
+      run: |
         pip install conan
         conan remote add bincrafters: https://bincrafters.jfrog.io/artifactory/api/conan/public-conan
         conan config set general.revisions_enabled=1
@@ -75,7 +122,9 @@ jobs:
         # gitlab repository
         conan remote add gitlab https://gitlab.com/api/v4/packages/conan
         conan user gitlab+deploy-token-653038 -r gitlab -p sBwmejFz5Pn-gZPSNFMy
-        
+
+    - name: Install conan
+      run: |
         mkdir ${{github.workspace}}/bin
         cd ${{github.workspace}}/bin
         conan install ..
