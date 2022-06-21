@@ -3,10 +3,10 @@ from conans import ConanFile, CMake
 
 class BasicwxWidgets(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
-    requires = ["wxwidgets/3.1.6@terranum-conan+wxwidgets/stable",
+    requires = ["wxwidgets/3.1.7@terranum-conan+wxwidgets/stable",
                 # "wxwidgets/3.1.5@bincrafters/stable",
-                "gtest/1.11.0",
-                "protobuf/3.19.2"]
+                "gtest/cci.20210126",
+                "protobuf/3.21.1"]
 
     generators = "cmake", "gcc", "txt"
 
