@@ -87,7 +87,7 @@ jobs:
       run: |
         mkdir ${{github.workspace}}/bin
         cd ${{github.workspace}}/bin
-        conan install ..
+        conan install .. --build=gtk
         conan build ..
 
     - name: Perform CodeQL Analysis
