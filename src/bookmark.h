@@ -7,6 +7,7 @@
 #include "wx/wx.h"
 #endif
 #include <wx/clipbrd.h>
+#include <wx/filename.h>
 
 #include "bookmark.pb.h"
 using namespace bk;

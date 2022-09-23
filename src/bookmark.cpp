@@ -70,9 +70,15 @@ void BookMark::DoAction() {
     return;
   }
 
+  wxFileName my_path (m_path);
   switch (m_type) {
     case BKM_OPEN:
-      wxLaunchDefaultApplication(m_path);
+      if (!my_path.Exists()){
+        wxLogError(_("File : '%s' didn't exist!\nMaybe network drive is disconnected!"),my_path.GetFullPath());
+      }
+      else {
+        wxLaunchDefaultApplication(m_path);
+      }
       break;
     case BKM_WEB:
       wxLaunchDefaultBrowser(m_path);
