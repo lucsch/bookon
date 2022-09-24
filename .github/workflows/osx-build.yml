@@ -6,38 +6,40 @@ on:
 
 jobs:
   build:
-    runs-on: macos-10.15
+    runs-on: macos-11
 
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
 
-      - name: Set up Python 3.8
+      - name: Set up Python 3.9
         uses: actions/setup-python@v2
         with:
-          python-version: 3.8
+          python-version: 3.9
 
-      - name: Install conan
+      - name: Install Conan
         run: |
-          pip install conan
-          # bincrafter repository
-          conan remote add bincrafters: https://bincrafters.jfrog.io/artifactory/api/conan/public-conan
-          conan config set general.revisions_enabled=1
+          python -m pip install --upgrade pip
+          pip install wheel conan
 
-          # gitlab repository
-          conan remote add gitlab https://gitlab.com/api/v4/packages/conan
+      - name: Create Build Environment
+        # Some projects don't allow in-source building, so create a separate build directory
+        # We'll use this as our working directory for all subsequent commands
+        run: cmake -E make_directory ${{github.workspace}}/build
+
+      - name: Install Conan Libraries
+        shell: bash
+        working-directory: ${{github.workspace}}/build
+        run: |
+          conan remote add gitlab https://gitlab.com/api/v4/packages/conan -f
           conan user gitlab+deploy-token-653038 -r gitlab -p sBwmejFz5Pn-gZPSNFMy
-
-      - name: Install libraries
-        run: |
-          mkdir ${{github.workspace}}/bin
-          cd ${{github.workspace}}/bin
           conan install ..
 
       - name: Build
+        shell: bash
+        working-directory: ${{github.workspace}}/build
         run: |
-          cd ${{github.workspace}}/bin
           conan build ..
           cpack -G DragNDrop
 
@@ -46,7 +48,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          file: "*.dmg;bin/*.dmg"
+          file: "*.dmg;bin/*.dmg;build/*.dmg"
           tags: true
           draft: true
 
