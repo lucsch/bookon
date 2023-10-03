@@ -2,8 +2,11 @@ cmake_minimum_required(VERSION 3.0)
 project("bookon")
 
 SET(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_CXX_STANDARD 11)
+#set(CMAKE_CXX_STANDARD 11)
+#set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 # cmake magical command for conan
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
@@ -53,6 +56,11 @@ ADD_EXECUTABLE(${CMAKE_PROJECT_NAME} MACOSX_BUNDLE WIN32
         ${ICON_PATH}
         src/resource.rc)
 target_link_libraries(${CMAKE_PROJECT_NAME} ${CONAN_LIBS} ${PROJECT_NAME}_lib)
+if(UNIX AND NOT APPLE)
+    find_package(PNG REQUIRED)
+    target_link_libraries(${PROJECT_NAME} ${PNG_LIBRARY})
+    target_link_libraries(${PROJECT_NAME}_lib ${PNG_LIBRARY})
+endif(UNIX AND NOT APPLE)
 
 # unit testing
 enable_testing()
