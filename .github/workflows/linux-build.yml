@@ -51,7 +51,7 @@ jobs:
         run: |
           mkdir ${{github.workspace}}/bin
           cd ${{github.workspace}}/bin
-          conan install .. -o unit_test=True --build=gtk
+          conan install .. --build=gtk
 
       - name: Build
         working-directory: ${{github.workspace}}/bin
