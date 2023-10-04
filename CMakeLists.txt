@@ -7,10 +7,7 @@ SET(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-
-# cmake magical command for conan
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()
+cmake_policy(SET CMP0058 NEW)
 
 # using git version
 set(${PROJECT_NAME}_MAJOR_VERSION "1")
@@ -21,6 +18,10 @@ include(cmake_modules/version.cmake)
 set(CMAKE_PROJECT_VERSION_MAJOR ${${PROJECT_NAME}_MAJOR_VERSION})
 set(CMAKE_PROJECT_VERSION_MINOR ${${PROJECT_NAME}_MINOR_VERSION})
 set(CMAKE_PROJECT_VERSION_PATCH ${GIT_NUMBER})
+
+find_package(wxWidgets REQUIRED gl core base)
+find_package(Protobuf CONFIG REQUIRED)
+find_package(GTest CONFIG REQUIRED)
 
 # osx icon
 set(MACOSX_BUNDLE_ICON_FILE bookon.icns)
@@ -34,14 +35,16 @@ endif ()
 
 INCLUDE_DIRECTORIES(src)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include(${wxWidgets_USE_FILE})
+include_directories(${Protobuf_INCLUDE_DIRS})
 
-# put source files into a library for unit testing
-find_package(Protobuf REQUIRED)
+protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS foo.proto)
 protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS src/bookmark.proto)
 set(SRC_FILES
         ${PROTO_SRCS}
         src/bookmark.cpp)
 add_library(${PROJECT_NAME}_lib OBJECT ${SRC_FILES})
+target_link_libraries(${PROJECT_NAME}_lib ${Protobuf_LIBRARIES})
 
 ADD_EXECUTABLE(${CMAKE_PROJECT_NAME} MACOSX_BUNDLE WIN32
         src/app.cpp
@@ -55,17 +58,11 @@ ADD_EXECUTABLE(${CMAKE_PROJECT_NAME} MACOSX_BUNDLE WIN32
         ${CMAKE_BINARY_DIR}/version.cpp
         ${ICON_PATH}
         src/resource.rc)
-target_link_libraries(${CMAKE_PROJECT_NAME} ${CONAN_LIBS} ${PROJECT_NAME}_lib)
-if(UNIX AND NOT APPLE)
-    find_package(PNG REQUIRED)
-    target_link_libraries(${PROJECT_NAME} ${PNG_LIBRARY})
-    target_link_libraries(${PROJECT_NAME}_lib ${PNG_LIBRARY})
-endif(UNIX AND NOT APPLE)
+target_link_libraries(${CMAKE_PROJECT_NAME} ${PROJECT_NAME}_lib ${wxWidgets_LIBRARIES})
 
 # unit testing
 enable_testing()
 add_subdirectory(test)
-
 
 install(TARGETS ${PROJECT_NAME}
         RUNTIME DESTINATION bin
