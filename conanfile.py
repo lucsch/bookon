@@ -3,14 +3,13 @@ from conans import ConanFile, CMake
 
 class BasicwxWidgets(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
-    requires = ["wxwidgets/3.2.2.1@terranum-conan+wxwidgets/stable",
+    requires = ["wxwidgets/3.2.4@terranum-conan+wxwidgets/stable",
                 # "wxwidgets/3.1.5@bincrafters/stable",
                 "gtest/1.14.0",
                 "protobuf/3.21.12"]
 
     generators = "cmake", "gcc", "txt"
     def configure(self):
-        pass
         if self.settings.os == "Linux":
             self.options["wxwidgets"].png = "system"
 

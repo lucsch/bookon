@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.5)
 project("bookon")
 
 SET(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -37,6 +37,10 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 # put source files into a library for unit testing
 find_package(Protobuf REQUIRED)
+set(Protobuf_DEBUG ON)
+message("Protobuf found: ${Protobuf_FOUND}")
+include_directories(${Protobuf_INCLUDE_DIRS})
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS src/bookmark.proto)
 set(SRC_FILES
         ${PROTO_SRCS}
@@ -58,8 +62,8 @@ ADD_EXECUTABLE(${CMAKE_PROJECT_NAME} MACOSX_BUNDLE WIN32
 target_link_libraries(${CMAKE_PROJECT_NAME} ${CONAN_LIBS} ${PROJECT_NAME}_lib)
 if(UNIX AND NOT APPLE)
     find_package(PNG REQUIRED)
-    target_link_libraries(${PROJECT_NAME} ${PNG_LIBRARY})
-    target_link_libraries(${PROJECT_NAME}_lib ${PNG_LIBRARY})
+    target_link_libraries(${PROJECT_NAME} ${PNG_LIBRARY} xkbcommon)
+    target_link_libraries(${PROJECT_NAME}_lib ${PNG_LIBRARY} xkbcommon)
 endif(UNIX AND NOT APPLE)
 
 # unit testing
