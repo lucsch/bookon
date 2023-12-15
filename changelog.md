@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - None
 
+## [1.2.106] - 2022-09-24
+
+### Changed
+
+- Bumping wxWidgets 3.2.4
+
+### Added
+
+- Adding recent files support (#6)
+
 ## [1.1.94] - 2022-09-24
 
 ### Changed

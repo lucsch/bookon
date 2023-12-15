@@ -14,7 +14,7 @@ conan_basic_setup()
 
 # using git version
 set(${PROJECT_NAME}_MAJOR_VERSION "1")
-set(${PROJECT_NAME}_MINOR_VERSION "1")
+set(${PROJECT_NAME}_MINOR_VERSION "2")
 include(cmake_modules/version.cmake)
 
 # defining cmake version for installer mainly
