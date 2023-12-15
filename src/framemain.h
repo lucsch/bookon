@@ -10,6 +10,8 @@
 #include <wx/splitter.h>
 #include <wx/srchctrl.h>
 #include <wx/systhemectrl.h>
+#include <wx/filehistory.h>
+#include <wx/fileconf.h>
 
 #include "contolmain.h"
 
@@ -49,6 +51,8 @@ class FrameMain : public wxFrame {
 
   void OnNew(wxCommandEvent& event);
   void OnOpen(wxCommandEvent& event);
+  void OnOpenRecent(wxCommandEvent &event);
+
   void OnSave(wxCommandEvent& event);
   void OnSaveAs(wxCommandEvent& event);
 
@@ -71,6 +75,8 @@ class FrameMain : public wxFrame {
   ControlMain* m_control = nullptr;
   wxString m_document_name = _("UNTITLED");
   wxString m_soft_name = _("Bookon");
+  wxFileHistory * m_file_history;
+
 };
 
 #endif

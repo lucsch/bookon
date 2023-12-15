@@ -1,10 +1,8 @@
 from conans import ConanFile, CMake
 
-
 class BasicwxWidgets(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     requires = ["wxwidgets/3.2.4@terranum-conan+wxwidgets/stable",
-                # "wxwidgets/3.1.5@bincrafters/stable",
                 "gtest/1.14.0",
                 "protobuf/3.16.0",
                 "zlib/1.3"]

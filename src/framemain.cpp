@@ -26,6 +26,14 @@ FrameMain::FrameMain(const wxString &title) : wxFrame(NULL, wxID_ANY, title, wxD
   frame_icon.CopyFromBitmap(*_img_bookon_icon);
   SetIcon(frame_icon);
 
+  // open the config file, will be saved OnClosing
+  m_file_history = new wxFileHistory(9, wxID_FILE);
+  wxConfigBase::Set(new wxFileConfig(title));
+  wxConfigBase *my_config = wxConfigBase::Get();
+  if (my_config) {
+    m_file_history->Load(*my_config);
+  }
+
   _create_controls();
   _create_menubar();
   _create_statusbar();
@@ -128,6 +136,18 @@ void FrameMain::_connect_events() {
   Bind(wxEVT_MENU, &FrameMain::OnBookmarkRemove, this, ID_BOOK_REMOVE);
   Bind(wxEVT_MENU, &FrameMain::OnBookmarkFind, this, ID_BOOK_FIND);
   Bind(wxEVT_UPDATE_UI, &FrameMain::OnUpdateIdleTitle, this, this->GetId());
+  Bind(wxEVT_MENU, &FrameMain::OnOpenRecent, this, m_file_history->GetBaseId(), wxID_FILE9);
+}
+
+void FrameMain::OnOpenRecent(wxCommandEvent &event) {
+  int menu_index = event.GetId() - m_file_history->GetBaseId();
+  wxFileName myName(m_file_history->GetHistoryFile(menu_index));
+  wxASSERT(myName.IsOk());
+  if (!myName.Exists()) {
+    wxLogError("'%s' didn't exists!", myName.GetFullPath());
+    m_file_history->RemoveFileFromHistory(menu_index);
+  }
+  do_open_file(myName.GetFullPath());
 }
 
 void FrameMain::_create_statusbar() {
@@ -146,6 +166,12 @@ void FrameMain::_create_menubar() {
   fileMenu->Append(ID_FILE_NEW, _("New") + "\tCtrl+N");
   fileMenu->AppendSeparator();
   fileMenu->Append(ID_FILE_OPEN, _("Open...") + "\tCtrl+O");
+
+  wxMenu *m_menu_recent = new wxMenu();
+  m_file_history->UseMenu(m_menu_recent);
+  m_file_history->AddFilesToMenu();
+  fileMenu->AppendSubMenu(m_menu_recent, _("Recent files"));
+
   fileMenu->Append(ID_FILE_SAVE, _("Save") + "\tCtrl+S");
   fileMenu->Append(ID_FILE_SAVE_AS, _("Save as...") + "\tCtrl+Alt+S");
   fileMenu->AppendSeparator();
@@ -243,6 +269,7 @@ void FrameMain::OnOpen(wxCommandEvent &event) {
     return;
   }
   do_open_file(my_dlg.GetPath());
+  m_file_history->AddFileToHistory(my_dlg.GetPath());
 }
 
 void FrameMain::OnSave(wxCommandEvent &event) {
@@ -328,5 +355,11 @@ void FrameMain::OnClose(wxCloseEvent &event) {
       return;
     }
   }
+
+  wxConfigBase *myconfig = wxConfigBase::Get();
+  if (myconfig) {
+    m_file_history->Save(*myconfig);
+  }
+  wxDELETE(m_file_history);
   event.Skip();
 }
