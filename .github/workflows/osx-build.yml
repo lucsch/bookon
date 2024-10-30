@@ -41,7 +41,7 @@ jobs:
         run: |
           mkdir ${{github.workspace}}/cmake-build
           cd ${{github.workspace}}/cmake-build
-          conan install .. 
+          conan install .. --build=missing
 
       - name: Build
         run: |
