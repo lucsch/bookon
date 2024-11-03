@@ -4,7 +4,7 @@ class BasicwxWidgets(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     requires = ["wxwidgets/3.2.5@terranum-conan+wxwidgets/stable",
                 "gtest/1.14.0",
-                "protobuf/3.16.0",
+                "protobuf/3.21.9",
                 "zlib/1.3"]
 
     generators = "cmake", "gcc", "txt"
