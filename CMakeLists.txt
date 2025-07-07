@@ -34,7 +34,6 @@ set(Protobuf_DEBUG ON)
 message("Protobuf found: ${Protobuf_FOUND}")
 find_package(wxwidgets REQUIRED)
 find_package(GTest)
-find_package(absl)
 
 # include directories
 include_directories(src)
@@ -44,7 +43,6 @@ include_directories(${protobuf_INCLUDE_DIRS})
 include_directories(${CMAKE_BINARY_DIR}/src)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${GTest_INCLUDE_DIRS})
-include_directories(${absl_INCLUDE_DIRS})
 
 
 protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS src/bookmark.proto)
