@@ -12,11 +12,12 @@ endif ()
 
 configure_file("test_param.h.in" "${CMAKE_BINARY_DIR}/test_param.h" @ONLY)
 include_directories(${CMAKE_BINARY_DIR})
+include_directories(${Gtest_INCLUDE_DIRS})
 
 add_executable(UnitTests
         test.cpp )
 #         $<TARGET_OBJECTS:${PROJECT_NAME}_lib>)
-target_link_libraries(UnitTests ${CONAN_LIBS} ${PROJECT_NAME}_lib)
+target_link_libraries(UnitTests ${PROJECT_NAME}_lib ${wxwidgets_LIBRARIES} ${protobuf_LIBRARIES} ${GTest_LIBRARIES})
 add_test(NAME test COMMAND UnitTests)
 
 # suppressing warning for missing PDB files for linked libs

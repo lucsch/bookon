@@ -2,15 +2,19 @@ from conans import ConanFile, CMake
 
 class BasicwxWidgets(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
-    requires = ["wxwidgets/3.2.5@terranum-conan+wxwidgets/stable",
-                "gtest/1.14.0",
-                "protobuf/3.21.9",
-                "zlib/1.3"]
+    requires = ["wxwidgets/3.3.0@terranum-conan+wxwidgets/stable",
+                "gtest/1.15.0",
+                "protobuf/5.27.0",
+                "zlib/1.3.1"]
 
-    generators = "cmake", "gcc", "txt"
+    generators = "cmake_find_package", "cmake_paths"
+
     def configure(self):
         if self.settings.os == "Linux":
             self.options["wxwidgets"].png = "system"
+
+    def build_requirements(self):
+        self.tool_requires("protobuf/5.27.0")
 
     def imports(self):
         self.copy("*.dll", dst="bin", src="bin")  # From bin to bin

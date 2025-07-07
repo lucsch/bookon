@@ -1,16 +1,12 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.20)
 project("bookon")
 
 SET(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 #set(CMAKE_CXX_STANDARD 11)
 #set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)  ## Needed for ABSL (used for protobuf)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-
-# cmake magical command for conan
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()
 
 # using git version
 set(${PROJECT_NAME}_MAJOR_VERSION "1")
@@ -32,15 +28,25 @@ if (MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif ()
 
-INCLUDE_DIRECTORIES(src)
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-
-# put source files into a library for unit testing
+# find libraries
 find_package(Protobuf REQUIRED)
 set(Protobuf_DEBUG ON)
 message("Protobuf found: ${Protobuf_FOUND}")
-include_directories(${Protobuf_INCLUDE_DIRS})
+find_package(wxwidgets REQUIRED)
+find_package(GTest)
+find_package(absl)
+
+# include directories
+include_directories(src)
+include_directories(${wxwidgets_INCLUDE_DIRS})
+add_definitions(${wxwidgets_DEFINITIONS})
+include_directories(${protobuf_INCLUDE_DIRS})
+include_directories(${CMAKE_BINARY_DIR}/src)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${GTest_INCLUDE_DIRS})
+include_directories(${absl_INCLUDE_DIRS})
+
+
 protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS src/bookmark.proto)
 set(SRC_FILES
         ${PROTO_SRCS}
@@ -59,7 +65,8 @@ ADD_EXECUTABLE(${CMAKE_PROJECT_NAME} MACOSX_BUNDLE WIN32
         ${CMAKE_BINARY_DIR}/version.cpp
         ${ICON_PATH}
         src/resource.rc)
-target_link_libraries(${CMAKE_PROJECT_NAME} ${CONAN_LIBS} ${PROJECT_NAME}_lib)
+
+target_link_libraries(${CMAKE_PROJECT_NAME} ${PROJECT_NAME}_lib ${wxwidgets_LIBRARIES} ${protobuf_LIBRARIES})
 if(UNIX AND NOT APPLE)
     find_package(PNG REQUIRED)
     target_link_libraries(${PROJECT_NAME} ${PNG_LIBRARY} xkbcommon)
@@ -69,7 +76,6 @@ endif(UNIX AND NOT APPLE)
 # unit testing
 enable_testing()
 add_subdirectory(test)
-
 
 install(TARGETS ${PROJECT_NAME}
         RUNTIME DESTINATION bin
