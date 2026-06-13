@@ -4,6 +4,8 @@
 
 # build
 cmake-build-*
+build/
+CMakeUserPresets.json
 
 # data
 _data

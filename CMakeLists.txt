@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.20)
 project("bookon")
 
 SET(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-#set(CMAKE_CXX_STANDARD 11)
-#set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 17)  ## Needed for ABSL (used for protobuf)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -32,24 +30,24 @@ endif ()
 find_package(Protobuf REQUIRED)
 set(Protobuf_DEBUG ON)
 message("Protobuf found: ${Protobuf_FOUND}")
-find_package(wxwidgets REQUIRED)
-find_package(GTest)
+find_package(wxWidgets REQUIRED)
+find_package(GTest REQUIRED)
 
 # include directories
-include_directories(src)
-include_directories(${wxwidgets_INCLUDE_DIRS})
-add_definitions(${wxwidgets_DEFINITIONS})
-include_directories(${protobuf_INCLUDE_DIRS})
-include_directories(${CMAKE_BINARY_DIR}/src)
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-include_directories(${GTest_INCLUDE_DIRS})
-
-
 protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS src/bookmark.proto)
 set(SRC_FILES
         ${PROTO_SRCS}
         src/bookmark.cpp)
 add_library(${PROJECT_NAME}_lib OBJECT ${SRC_FILES})
+target_include_directories(${PROJECT_NAME}_lib
+        PUBLIC
+        src
+        ${CMAKE_CURRENT_BINARY_DIR}
+        ${CMAKE_CURRENT_BINARY_DIR}/src)
+target_link_libraries(${PROJECT_NAME}_lib
+        PUBLIC
+        protobuf::libprotobuf
+        wxWidgets::wxWidgets)
 
 ADD_EXECUTABLE(${CMAKE_PROJECT_NAME} MACOSX_BUNDLE WIN32
         src/app.cpp
@@ -64,12 +62,9 @@ ADD_EXECUTABLE(${CMAKE_PROJECT_NAME} MACOSX_BUNDLE WIN32
         ${ICON_PATH}
         src/resource.rc)
 
-target_link_libraries(${CMAKE_PROJECT_NAME} ${PROJECT_NAME}_lib ${wxwidgets_LIBRARIES} ${protobuf_LIBRARIES})
-if(UNIX AND NOT APPLE)
-    find_package(PNG REQUIRED)
-    target_link_libraries(${PROJECT_NAME} ${PNG_LIBRARY} xkbcommon)
-    target_link_libraries(${PROJECT_NAME}_lib ${PNG_LIBRARY} xkbcommon)
-endif(UNIX AND NOT APPLE)
+target_link_libraries(${CMAKE_PROJECT_NAME}
+        PRIVATE
+        ${PROJECT_NAME}_lib)
 
 # unit testing
 enable_testing()
