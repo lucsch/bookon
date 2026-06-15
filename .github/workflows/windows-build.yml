@@ -13,7 +13,7 @@ jobs:
     runs-on: windows-2025
 
     env:
-      BUILD_TYPE: RelWithDebInfo
+      BUILD_TYPE: Release
 
     steps:
       - uses: actions/checkout@v4
@@ -29,39 +29,30 @@ jobs:
         id: cache-conan
         uses: pat-s/always-upload-cache@v3.0.11
         with:
-          path: C:/Users/runneradmin/.conan
+          path: C:/Users/runneradmin/.conan2
           key: conan-windows
 
-      - name: Install conan
+      - name: Install Conan
         run: |
           python -m pip install --upgrade pip
-          pip install conan==1.*
-          
-          # gitlab support
-          conan config set general.revisions_enabled=1
-          conan remote add gitlab https://gitlab.com/api/v4/packages/conan --force
-          conan user gitlab+deploy-token-653038 -r gitlab -p sBwmejFz5Pn-gZPSNFMy
+          pip install "conan>=2,<3"
+          conan profile detect --force
 
       - name: Install libraries
         run: |
-          mkdir ${{github.workspace}}/cmake-build
-          cd ${{github.workspace}}/cmake-build
-          conan install .. --build=missing
-
-#      - name: Configure
-#        working-directory: ${{github.workspace}}/cmake-build
-#        run: cmake .. -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-#
-#      - name: Build
-#        working-directory: ${{github.workspace}}/cmake-build
-#        run: cmake --build . --config ${{env.BUILD_TYPE}}
+          conan install . `
+            -s build_type=${{env.BUILD_TYPE}} `
+            -s compiler.cppstd=17 `
+            --build=missing `
+            -r=conancenter
 
       - name: Build
-        working-directory: ${{github.workspace}}/cmake-build
-        run: conan build ..
+        run: |
+          cmake --preset conan-release
+          cmake --build --preset conan-release --config ${{env.BUILD_TYPE}}
 
       - name: CPack
-        working-directory: ${{github.workspace}}/cmake-build
+        working-directory: ${{github.workspace}}/build/${{env.BUILD_TYPE}}
         run: |
           cpack -C ${{env.BUILD_TYPE}} -G ZIP
 
@@ -69,8 +60,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           path: |
-            ${{github.workspace}}/cmake-build/*.zip
-            ${{github.workspace}}/cmake-build/bin/*.pdb
+            ${{github.workspace}}/build/${{env.BUILD_TYPE}}/*.zip
 
   upload_all:
     name: Upload if release
@@ -89,7 +79,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          file: "dist/*.zip;dist/*.msi;dist/bin/*.pdb"
+          file: "dist/*.zip;dist/*.msi"
           tags: true
           draft: true
           verbose: true

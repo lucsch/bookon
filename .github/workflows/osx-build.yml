@@ -24,40 +24,38 @@ jobs:
         id: cache-conan
         uses: pat-s/always-upload-cache@v3.0.11
         with:
-          path: /Users/runner/.conan
+          path: /Users/runner/.conan2
           key: conan-osx
 
-      - name: Install conan
+      - name: Install Conan
         run: |
           python -m pip install --upgrade pip
-          pip install conan==1.*
-
-          # gitlab support
-          conan config set general.revisions_enabled=1
-          conan remote add gitlab https://gitlab.com/api/v4/packages/conan --force
-          conan user gitlab+deploy-token-653038 -r gitlab -p sBwmejFz5Pn-gZPSNFMy
+          pip install "conan>=2,<3"
+          conan profile detect --force
 
       - name: Install libraries
         run: |
-          mkdir ${{github.workspace}}/cmake-build
-          cd ${{github.workspace}}/cmake-build
-          conan install .. --build=missing
+          conan install . \
+            -s build_type=Release \
+            -s compiler.cppstd=17 \
+            --build=missing \
+            -r=conancenter
 
       - name: Build
         run: |
-          cd ${{github.workspace}}/cmake-build
-          conan build ..
+          cmake --preset conan-release
+          cmake --build --preset conan-release
 
       - name: Installer DND
+        working-directory: ${{github.workspace}}/build/Release
         run: |
-          cd ${{github.workspace}}/cmake-build
           cpack -G DragNDrop
 
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
           path: |
-            ${{github.workspace}}/cmake-build/*.dmg
+            ${{github.workspace}}/build/Release/*.dmg
 
   upload_all:
     name: Upload if release

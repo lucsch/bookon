@@ -38,11 +38,11 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v1
+      uses: github/codeql-action/init@v4
       with:
         languages: ${{ matrix.language }}
         # If you wish to specify custom queries, you can do so here or in a config file.
@@ -70,25 +70,23 @@ jobs:
         sudo apt-get install libxcb-image0-dev libxcb-keysyms1-dev libxcb-randr0-dev libxcb-shape0-dev libxcb-sync-dev
         sudo apt-get install libxcb-xfixes0-dev libxcb-xinerama0-dev libxcb-dri3-dev libxcb-util-dev
 
-    - name: Install conan
+    - name: Install Conan
       run: |
-        pip install conan
-        conan remote add bincrafters: https://bincrafters.jfrog.io/artifactory/api/conan/public-conan
-        conan config set general.revisions_enabled=1
+        python -m pip install --upgrade pip
+        pip install "conan>=2,<3"
+        conan profile detect --force
 
-        conan profile new default --detect
-        conan profile update settings.compiler.libcxx=libstdc++11 default
-
-        # gitlab repository
-        conan remote add gitlab https://gitlab.com/api/v4/packages/conan
-        conan user gitlab+deploy-token-653038 -r gitlab -p sBwmejFz5Pn-gZPSNFMy
-
-    - name: Install conan
+    - name: Build with Conan
       run: |
-        mkdir ${{github.workspace}}/bin
-        cd ${{github.workspace}}/bin
-        conan install .. --build=gtk
-        conan build ..
+        conan install . \
+          -s build_type=Release \
+          -s compiler.cppstd=17 \
+          -c tools.system.package_manager:mode=install \
+          -c tools.system.package_manager:sudo=True \
+          --build=missing \
+          -r=conancenter
+        cmake --preset conan-release
+        cmake --build --preset conan-release
 
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v1
+      uses: github/codeql-action/analyze@v4

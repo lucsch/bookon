@@ -10,7 +10,6 @@ jobs:
 
     env:
       BUILD_TYPE: Release
-      PROJ_LIB: ${{github.workspace}}/bin/share/proj
 
     steps:
       - uses: actions/checkout@v4
@@ -18,23 +17,22 @@ jobs:
           fetch-depth: 0
 
       - name: Set up Python 3.12
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+
+      - name: Cache Conan libs
+        id: cache-conan
+        uses: pat-s/always-upload-cache@v3.0.11
+        with:
+          path: /home/runner/.conan2
+          key: conan-linux
 
       - name: Install Conan
         run: |
           python -m pip install --upgrade pip
-          pip install wheel conan==1.*
-          
-          # gitlab support (wxwidgets, mysql, gdal)
-          conan remote add gitlab https://gitlab.com/api/v4/packages/conan
-          
-          # create default profile with libstdc++11
-          conan profile new default --detect
-          conan profile update settings.compiler.libcxx=libstdc++11 default
-          conan profile update conf.tools.system.package_manager:mode=install default
-          conan profile update conf.tools.system.package_manager:sudo=True default
+          pip install wheel "conan>=2,<3"
+          conan profile detect --force
 
       - name: Install system libs
         run: |
@@ -49,15 +47,18 @@ jobs:
           
       - name: Install libraries
         run: |
-          mkdir ${{github.workspace}}/bin
-          cd ${{github.workspace}}/bin
-          conan install .. --build=gtk
+          conan install . \
+            -s build_type=${{env.BUILD_TYPE}} \
+            -s compiler.cppstd=17 \
+            -c tools.system.package_manager:mode=install \
+            -c tools.system.package_manager:sudo=True \
+            --build=missing \
+            -r=conancenter
 
       - name: Build
-        working-directory: ${{github.workspace}}/bin
-        run: conan build ..
+        run: |
+          cmake --preset conan-release
+          cmake --build --preset conan-release
 
       - name: Run tests
-        working-directory: ${{github.workspace}}/bin
-        run: |
-          ctest --verbose
+        run: ctest --test-dir build/${{env.BUILD_TYPE}} --output-on-failure
