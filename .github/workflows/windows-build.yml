@@ -10,7 +10,7 @@ jobs:
   build:
     name: Windows build
 
-    runs-on: windows-2022
+    runs-on: windows-2025
 
     env:
       BUILD_TYPE: RelWithDebInfo
@@ -20,10 +20,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Python 3.11
+      - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
 
       - name: Cache Conan libs
         id: cache-conan
@@ -75,7 +75,7 @@ jobs:
   upload_all:
     name: Upload if release
     needs: [build]
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     if: github.event_name == 'release' && github.event.action == 'created'
 
     steps:

@@ -62,7 +62,7 @@ jobs:
   upload_all:
     name: Upload if release
     needs: [ build ]
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     if: github.event_name == 'release' && github.event.action == 'created'
 
     steps:
