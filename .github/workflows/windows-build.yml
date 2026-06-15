@@ -42,7 +42,8 @@ jobs:
         run: |
           conan install . `
             -s build_type=${{env.BUILD_TYPE}} `
-            -s compiler.cppstd=17 `
+            -s:h compiler.cppstd=17 `
+            -s:b compiler.cppstd=17 `
             --build=missing `
             -r=conancenter
 
