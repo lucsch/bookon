@@ -13,24 +13,32 @@ jobs:
     runs-on: windows-2022
 
     env:
-      BUILD_TYPE: Release
+      BUILD_TYPE: RelWithDebInfo
+      CPPSTD: 17
+      CONAN_CONFIGURE_PRESET: conan-default
+      CONAN_BUILD_PRESET: conan-relwithdebinfo
+      BUILD_DIR: ${{github.workspace}}/cmake-build/build
+      PROJ_LIB: ${{github.workspace}}/cmake-build/build/bin
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
       - name: Set up Python 3.12
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
       - name: Cache Conan libs
         id: cache-conan
-        uses: pat-s/always-upload-cache@v3.0.11
+        uses: actions/cache@v4
         with:
-          path: C:/Users/runneradmin/.conan2
-          key: conan-windows
+          path: ~/.conan2/p
+          key: conan2-${{ runner.os }}-${{ runner.arch }}-${{ env.BUILD_TYPE }}-cppstd${{ env.CPPSTD }}-${{ hashFiles('conanfile.py') }}
+          restore-keys: |
+            conan2-${{ runner.os }}-${{ runner.arch }}-${{ env.BUILD_TYPE }}-cppstd${{ env.CPPSTD }}-
+            conan2-${{ runner.os }}-${{ runner.arch }}-
 
       - name: Install Conan
         run: |
@@ -40,28 +48,32 @@ jobs:
 
       - name: Install libraries
         run: |
-          conan install . `
-            -s build_type=${{env.BUILD_TYPE}} `
-            -s:h compiler.cppstd=17 `
-            -s:b compiler.cppstd=17 `
-            --build=missing `
-            -r=conancenter
+          conan install . 
+           --output-folder=${{github.workspace}}/cmake-build 
+           --build=missing 
+           -s build_type=${{env.BUILD_TYPE}} 
+           -s:h compiler.cppstd=${{env.CPPSTD}}
+           -s:b compiler.cppstd=${{env.CPPSTD}}
+           -r=conancenter
+
+      - name: Configure
+        run: cmake --preset ${{env.CONAN_CONFIGURE_PRESET}}
 
       - name: Build
-        run: |
-          cmake --preset conan-release
-          cmake --build --preset conan-release --config ${{env.BUILD_TYPE}}
+        run: cmake --build --preset ${{env.CONAN_BUILD_PRESET}}
 
-      - name: CPack
-        working-directory: ${{github.workspace}}/build/${{env.BUILD_TYPE}}
-        run: |
-          cpack -C ${{env.BUILD_TYPE}} -G ZIP
+      - name: Installer ZIP
+        working-directory: ${{env.BUILD_DIR}}
+        run: cpack -G ZIP -C ${{env.BUILD_TYPE}}
 
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
           path: |
-            ${{github.workspace}}/build/${{env.BUILD_TYPE}}/*.zip
+            ${{env.BUILD_DIR}}/*.zip
+            ${{env.BUILD_DIR}}/bin/*.pdb
+            ${{env.BUILD_DIR}}/bin/${{env.BUILD_TYPE}}/*.pdb
+          retention-days: 5
 
   upload_all:
     name: Upload if release
@@ -70,7 +82,7 @@ jobs:
     if: github.event_name == 'release' && github.event.action == 'created'
 
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         with:
           name: artifact
           path: dist
@@ -80,7 +92,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          file: "dist/*.zip;dist/*.msi"
+          file: "dist/*.zip;dist/*.msi;dist/bin/bookon.pdb""
           tags: true
           draft: true
           verbose: true
