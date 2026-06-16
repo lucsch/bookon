@@ -48,12 +48,12 @@ jobs:
 
       - name: Install libraries
         run: |
-          conan install . 
-           --output-folder=${{github.workspace}}/cmake-build 
-           --build=missing 
-           -s build_type=${{env.BUILD_TYPE}} 
-           -s:h compiler.cppstd=${{env.CPPSTD}}
-           -s:b compiler.cppstd=${{env.CPPSTD}}
+          conan install . `
+           --output-folder=${{github.workspace}}/cmake-build `
+           --build=missing `
+           -s build_type=${{env.BUILD_TYPE}} `
+           -s:h compiler.cppstd=${{env.CPPSTD}} `
+           -s:b compiler.cppstd=${{env.CPPSTD}} `
            -r=conancenter
 
       - name: Configure
