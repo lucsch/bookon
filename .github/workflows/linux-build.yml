@@ -69,14 +69,14 @@ jobs:
         run: ctest --test-dir build/${{env.BUILD_TYPE}} --output-on-failure
 
       - name: Installer DEB
-        working-directory: ${{env.BUILD_DIR}}
+        working-directory: ${{github.workspace}}/build/${{env.BUILD_TYPE}}
         run: cpack -G DEB -C ${{env.BUILD_TYPE}}
 
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
           path: |
-            ${{env.BUILD_DIR}}/*.deb
+            ${{github.workspace}}/build/${{env.BUILD_TYPE}}/*.deb
           retention-days: 5
 
   upload_all:
@@ -100,4 +100,3 @@ jobs:
           tags: true
           draft: true
           verbose: true
-
