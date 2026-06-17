@@ -6,19 +6,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- None
+## [v1.3.XXX] - XXXX-XX-XX
 
-## [1.2.107] - 2023-12-15
+### Added
+
+- Adding a check box for opening the latest recent file when the application starts (#9)
+
+### Changed
+
+- Migrating to conan 2.* (#8)
+- Bumping wxWidgets 3.3.2
+- Bumping protobuf to 7.35.0
+
+## [v1.2.107] - 2023-12-16
+
+### Added
+
+- Adding an option to open recent file (#6)
 
 ### Changed
 
 - Bumping wxWidgets 3.2.4
 
-### Added
-
-- Adding recent files support (#6)
-
-## [1.1.94] - 2022-09-24
+## [v1.1.94] - 2022-09-24
 
 ### Changed
 
@@ -29,7 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
  - Adding a warning if a file didn't exists (Bug #3)
 
-## [1.0.70-Beta] - 2022-01-15
+## [v1.0.70-Beta] - 2022-01-15
 
 ### Added
 

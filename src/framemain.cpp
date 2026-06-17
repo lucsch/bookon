@@ -11,6 +11,9 @@ const int ID_GROUP_ENTRY_REMOVE = wxNewId();
 const int ID_BOOK_ADD = wxNewId();
 const int ID_BOOK_EDIT = wxNewId();
 const int ID_BOOK_REMOVE = wxNewId();
+const int ID_FILE_REOPEN_LATEST_RECENT = wxNewId();
+
+const wxString CONFIG_REOPEN_LATEST_RECENT_FILE = "/reopen_latest_recent_file";
 
 extern const char *bookon_MAJOR_VERSION;
 extern const char *bookon_MINOR_VERSION;
@@ -32,6 +35,7 @@ FrameMain::FrameMain(const wxString &title) : wxFrame(NULL, wxID_ANY, title, wxD
   wxConfigBase *my_config = wxConfigBase::Get();
   if (my_config) {
     m_file_history->Load(*my_config);
+    my_config->Read(CONFIG_REOPEN_LATEST_RECENT_FILE, &m_reopen_latest_recent_file, false);
   }
 
   _create_controls();
@@ -123,6 +127,7 @@ void FrameMain::_connect_events() {
   Bind(wxEVT_CLOSE_WINDOW, &FrameMain::OnClose, this, wxID_ANY);
   Bind(wxEVT_MENU, &FrameMain::OnNew, this, ID_FILE_NEW);
   Bind(wxEVT_MENU, &FrameMain::OnOpen, this, ID_FILE_OPEN);
+  Bind(wxEVT_MENU, &FrameMain::OnReopenLatestRecentFile, this, ID_FILE_REOPEN_LATEST_RECENT);
   Bind(wxEVT_MENU, &FrameMain::OnSave, this, ID_FILE_SAVE);
   Bind(wxEVT_MENU, &FrameMain::OnSaveAs, this, ID_FILE_SAVE_AS);
   Bind(wxEVT_MENU, &FrameMain::OnAbout, this, ID_ABOUT);
@@ -141,13 +146,43 @@ void FrameMain::_connect_events() {
 
 void FrameMain::OnOpenRecent(wxCommandEvent &event) {
   int menu_index = event.GetId() - m_file_history->GetBaseId();
+  _open_recent_file(menu_index);
+}
+
+bool FrameMain::_open_recent_file(size_t menu_index) {
+  if (menu_index >= m_file_history->GetCount()) {
+    return false;
+  }
+
   wxFileName myName(m_file_history->GetHistoryFile(menu_index));
   wxASSERT(myName.IsOk());
   if (!myName.Exists()) {
     wxLogError("'%s' didn't exists!", myName.GetFullPath());
     m_file_history->RemoveFileFromHistory(menu_index);
+    return false;
   }
   do_open_file(myName.GetFullPath());
+  return true;
+}
+
+bool FrameMain::ReopenLatestRecentFileIfEnabled() {
+  if (!m_reopen_latest_recent_file) {
+    return false;
+  }
+
+  return _open_recent_file(0);
+}
+
+void FrameMain::OnReopenLatestRecentFile(wxCommandEvent &event) {
+  m_reopen_latest_recent_file = event.IsChecked();
+  _save_reopen_latest_recent_file_setting();
+}
+
+void FrameMain::_save_reopen_latest_recent_file_setting() {
+  wxConfigBase *my_config = wxConfigBase::Get();
+  if (my_config) {
+    my_config->Write(CONFIG_REOPEN_LATEST_RECENT_FILE, m_reopen_latest_recent_file);
+  }
 }
 
 void FrameMain::_create_statusbar() {
@@ -171,6 +206,8 @@ void FrameMain::_create_menubar() {
   m_file_history->UseMenu(m_menu_recent);
   m_file_history->AddFilesToMenu();
   fileMenu->AppendSubMenu(m_menu_recent, _("Recent files"));
+  fileMenu->AppendCheckItem(ID_FILE_REOPEN_LATEST_RECENT, _("Reopen latest recent file"));
+  fileMenu->Check(ID_FILE_REOPEN_LATEST_RECENT, m_reopen_latest_recent_file);
 
   fileMenu->Append(ID_FILE_SAVE, _("Save") + "\tCtrl+S");
   fileMenu->Append(ID_FILE_SAVE_AS, _("Save as...") + "\tCtrl+Alt+S");
@@ -358,6 +395,7 @@ void FrameMain::OnClose(wxCloseEvent &event) {
 
   wxConfigBase *myconfig = wxConfigBase::Get();
   if (myconfig) {
+    _save_reopen_latest_recent_file_setting();
     m_file_history->Save(*myconfig);
   }
   wxDELETE(m_file_history);

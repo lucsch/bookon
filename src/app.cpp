@@ -12,6 +12,8 @@ bool MainApp::OnInit() {
   FrameMain *frame = new FrameMain("Bookon");
   if (m_open_file != wxEmptyString) {
     frame->do_open_file(m_open_file);
+  } else {
+    frame->ReopenLatestRecentFileIfEnabled();
   }
   frame->Show(true);
   return true;

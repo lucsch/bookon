@@ -30,6 +30,7 @@ extern const int ID_GROUP_ENTRY_REMOVE;
 extern const int ID_BOOK_ADD;
 extern const int ID_BOOK_EDIT;
 extern const int ID_BOOK_REMOVE;
+extern const int ID_FILE_REOPEN_LATEST_RECENT;
 
 class FrameMain : public wxFrame {
  public:
@@ -52,6 +53,7 @@ class FrameMain : public wxFrame {
   void OnNew(wxCommandEvent& event);
   void OnOpen(wxCommandEvent& event);
   void OnOpenRecent(wxCommandEvent &event);
+  void OnReopenLatestRecentFile(wxCommandEvent &event);
 
   void OnSave(wxCommandEvent& event);
   void OnSaveAs(wxCommandEvent& event);
@@ -59,6 +61,7 @@ class FrameMain : public wxFrame {
   void OnUpdateIdleTitle(wxUpdateUIEvent & event);
 
   void do_open_file(const wxString& filename);
+  bool ReopenLatestRecentFileIfEnabled();
 
  private:
   void _create_menubar();
@@ -68,6 +71,8 @@ class FrameMain : public wxFrame {
   void _create_toolbar();
   void _assign_image_to_treectrl();
   void _update_title();
+  bool _open_recent_file(size_t menu_index);
+  void _save_reopen_latest_recent_file_setting();
 
   wxTreeCtrl* m_tree_ctrl;
   wxDataViewListCtrl* m_list_ctrl;
@@ -76,6 +81,7 @@ class FrameMain : public wxFrame {
   wxString m_document_name = _("UNTITLED");
   wxString m_soft_name = _("Bookon");
   wxFileHistory * m_file_history;
+  bool m_reopen_latest_recent_file = false;
 
 };
 
