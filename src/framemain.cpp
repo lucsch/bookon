@@ -206,11 +206,17 @@ void FrameMain::_create_menubar() {
   m_file_history->UseMenu(m_menu_recent);
   m_file_history->AddFilesToMenu();
   fileMenu->AppendSubMenu(m_menu_recent, _("Recent files"));
-  fileMenu->AppendCheckItem(ID_FILE_REOPEN_LATEST_RECENT, _("Reopen latest recent file"));
-  fileMenu->Check(ID_FILE_REOPEN_LATEST_RECENT, m_reopen_latest_recent_file);
 
   fileMenu->Append(ID_FILE_SAVE, _("Save") + "\tCtrl+S");
   fileMenu->Append(ID_FILE_SAVE_AS, _("Save as...") + "\tCtrl+Alt+S");
+  fileMenu->AppendSeparator();
+
+  wxMenu *m_menu_preference = new wxMenu();
+  m_menu_preference->AppendCheckItem(ID_FILE_REOPEN_LATEST_RECENT, _("Reopen latest recent file"));
+  m_menu_preference->Check(ID_FILE_REOPEN_LATEST_RECENT, m_reopen_latest_recent_file);
+
+  fileMenu->AppendSubMenu(m_menu_preference, _("Preferences"));
+
   fileMenu->AppendSeparator();
   fileMenu->Append(ID_QUIT, "E&xit\tAlt-X", "Quit this program");
   menuBar->Append(fileMenu, "&File");
