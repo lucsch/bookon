@@ -1,6 +1,10 @@
 name: Linux build
 
-on: [ push ]
+on:
+  push:
+  release:
+    types:
+      - created
 
 jobs:
   build:
@@ -63,3 +67,37 @@ jobs:
 
       - name: Run tests
         run: ctest --test-dir build/${{env.BUILD_TYPE}} --output-on-failure
+
+      - name: Installer DEB
+        working-directory: ${{env.BUILD_DIR}}
+        run: cpack -G DEB -C ${{env.BUILD_TYPE}}
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          path: |
+            ${{env.BUILD_DIR}}/*.deb
+          retention-days: 5
+
+  upload_all:
+    name: Upload if release
+    needs: [build]
+    runs-on: ubuntu-24.04
+    if: github.event_name == 'release' && github.event.action == 'created'
+
+    steps:
+      - uses: actions/download-artifact@v5
+        with:
+          name: artifact
+          path: dist
+
+      - name: Upload to releases
+        uses: xresloader/upload-to-github-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          file: "dist/*.deb"
+          tags: true
+          draft: true
+          verbose: true
+
