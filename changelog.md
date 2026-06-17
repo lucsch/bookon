@@ -6,11 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [v1.3.XXX] - XXXX-XX-XX
+## [v1.3.123] - 2026-06-17
 
 ### Added
 
-- Adding a check box for opening the latest recent file when the application starts (#9)
+- Adding a checkbox for opening the latest recent file when the application starts (#9)
 
 ### Changed
 
