@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 project("bookon")
 
+
 SET(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 17)  ## Needed for ABSL (used for protobuf)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -30,8 +31,8 @@ endif ()
 find_package(Protobuf REQUIRED)
 set(Protobuf_DEBUG ON)
 message("Protobuf found: ${Protobuf_FOUND}")
-find_package(wxWidgets REQUIRED)
 find_package(GTest REQUIRED)
+find_package(wxWidgets REQUIRED CONFIG)
 
 # include directories
 protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS src/bookmark.proto)
