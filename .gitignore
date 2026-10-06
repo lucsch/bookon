@@ -11,3 +11,5 @@ CMakeUserPresets.json
 _data
 _art
 _releases
+
+.codegraph

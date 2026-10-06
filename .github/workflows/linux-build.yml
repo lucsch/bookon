@@ -16,12 +16,12 @@ jobs:
       BUILD_TYPE: Release
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: Set up Python 3.12
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: '3.12'
 
@@ -73,7 +73,7 @@ jobs:
         run: cpack -G DEB -C ${{env.BUILD_TYPE}}
 
       - name: Upload
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           path: |
             ${{github.workspace}}/build/${{env.BUILD_TYPE}}/*.deb
@@ -86,7 +86,7 @@ jobs:
     if: github.event_name == 'release' && github.event.action == 'created'
 
     steps:
-      - uses: actions/download-artifact@v5
+      - uses: actions/download-artifact@v8
         with:
           name: artifact
           path: dist

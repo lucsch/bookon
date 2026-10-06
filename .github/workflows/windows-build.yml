@@ -21,18 +21,18 @@ jobs:
       PROJ_LIB: ${{github.workspace}}/cmake-build/build/bin
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: Set up Python 3.12
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: '3.12'
 
       - name: Cache Conan libs
         id: cache-conan
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.conan2/p
           key: conan2-${{ runner.os }}-${{ runner.arch }}-${{ env.BUILD_TYPE }}-cppstd${{ env.CPPSTD }}-${{ hashFiles('conanfile.py') }}
@@ -67,7 +67,7 @@ jobs:
         run: cpack -G ZIP -C ${{env.BUILD_TYPE}}
 
       - name: Upload
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           path: |
             ${{env.BUILD_DIR}}/*.zip
@@ -82,7 +82,7 @@ jobs:
     if: github.event_name == 'release' && github.event.action == 'created'
 
     steps:
-      - uses: actions/download-artifact@v5
+      - uses: actions/download-artifact@v8
         with:
           name: artifact
           path: dist
